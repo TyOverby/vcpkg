@@ -1,0 +1,4 @@
+Source: qt5quickcontrols2
+Version: 5.9.3-0
+Description: Qt5 Quick Controls 2 Module; The Qt Quick Controls 2 module provides a set of controls that can be used to build complete interfaces in Qt Quick.
+Build-Depends: qt5modularscripts, qt5base, qt5declarative

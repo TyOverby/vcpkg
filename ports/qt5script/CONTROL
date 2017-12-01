@@ -1,0 +1,4 @@
+Source: qt5script
+Version: 5.9.3-0
+Description: Qt5 Script Module - Qt provides support for application scripting with ECMAScript
+Build-Depends: qt5modularscripts, qt5base

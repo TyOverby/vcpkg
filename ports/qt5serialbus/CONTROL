@@ -1,0 +1,4 @@
+Source: qt5serialbus
+Version: 5.9.3-0
+Description: Qt5 Serial Bus - The Qt Serial Bus API provides classes and functions to access the various industrial serial buses and protocols, such as CAN, ModBus, and others.
+Build-Depends: qt5modularscripts, qt5base

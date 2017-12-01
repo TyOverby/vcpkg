@@ -1,0 +1,4 @@
+Source: qt5webengine
+Version: 5.9.3-0
+Description: Qt5 WebEngine Module - Qt WebEngine provides functionality for rendering regions of dynamic web content.
+Build-Depends: qt5modularscripts, qt5base
