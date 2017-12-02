@@ -60,7 +60,6 @@ configure_qt(
         -nomake examples -nomake tests
         -opengl dynamic # other options are "-no-opengl" and "-opengl angle" "-opengl dynamic"
 		#-no-angle
-		-skip qtwebengine
         -mp
         LIBJPEG_LIBS="-ljpeg"
     OPTIONS_RELEASE

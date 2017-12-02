@@ -10,7 +10,7 @@ index a5b69a2..01c5cde 100644
    build_gn_with_ninja_manually(tempdir, options)
 @@ -85,3 +85,3 @@
    else:
--    print('Building gn using itself to %s...' % build_rel)
+-    print 'Building gn using itself to %s...' % build_rel
 +    print('Building gn using itself to %s...' % build_rel)
      build_gn_with_gn(temp_gn, build_root, options)
 	 
