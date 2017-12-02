@@ -1,5 +1,0 @@
-include(vcpkg_common_functions)
-
-include(${CURRENT_INSTALLED_DIR}/share/qt5modularscripts/qt_modular_library.cmake)
-
-qt_modular_library(qttranslation 40ab6e7f0815f0f2c38062858e185d9a04cdd1bb360f677b7370bd902019346223e8bf7ee34079718bbb36b793ef773ecbb8b2eca5f5f5996c77729d7da77aeb)
