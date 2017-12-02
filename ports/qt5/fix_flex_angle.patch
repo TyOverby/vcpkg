@@ -1,0 +1,49 @@
+diff --git a/qtbase/src/angle/src/compiler/preprocessor/preprocessor.pro b/qtbase/src/angle/src/compiler/preprocessor/preprocessor.pro
+index 759a339..8c5b155 100644
+--- a/qtbase/src/angle/src/compiler/preprocessor/preprocessor.pro
++++ b/qtbase/src/angle/src/compiler/preprocessor/preprocessor.pro
+@@ -42,15 +42,15 @@ SOURCES += \
+     $$ANGLE_DIR/src/compiler/preprocessor/Preprocessor.cpp \
+     $$ANGLE_DIR/src/compiler/preprocessor/Token.cpp
+ 
+-# NOTE: 'flex' and 'bison' can be found in qt5/gnuwin32/bin
+-flex.commands = $$addGnuPath(flex) --noline --nounistd --outfile=${QMAKE_FILE_OUT} ${QMAKE_FILE_NAME}
++# NOTE: 'win_flex' and 'bison' can be found in qt5/gnuwin32/bin
++flex.commands = $$addGnuPath(win_flex) --noline --nounistd --outfile=${QMAKE_FILE_OUT} ${QMAKE_FILE_NAME}
+ flex.output = $${BUILDSUBDIR}${QMAKE_FILE_BASE}.cpp
+ flex.input = FLEX_SOURCES
+ flex.dependency_type = TYPE_C
+ flex.variable_out = GENERATED_SOURCES
+ QMAKE_EXTRA_COMPILERS += flex
+ 
+-bison.commands = $$addGnuPath(bison) --no-lines --skeleton=yacc.c  --output=${QMAKE_FILE_OUT} ${QMAKE_FILE_NAME}
++bison.commands = $$addGnuPath(win_bison) --no-lines --skeleton=yacc.c  --output=${QMAKE_FILE_OUT} ${QMAKE_FILE_NAME}
+ bison.output = $${BUILDSUBDIR}${QMAKE_FILE_BASE}.cpp
+ bison.input = BISON_SOURCES
+ bison.dependency_type = TYPE_C 
+diff --git a/qtbase/src/angle/src/compiler/translator.pro b/qtbase/src/angle/src/compiler/translator.pro
+index e9d16ca..9572a51 100644
+--- a/qtbase/src/angle/src/compiler/translator.pro
++++ b/qtbase/src/angle/src/compiler/translator.pro
+@@ -178,17 +178,17 @@ SOURCES += \
+     $$ANGLE_DIR/src/third_party/compiler/ArrayBoundsClamper.cpp
+ 
+ 
+-# NOTE: 'flex' and 'bison' can be found in qt5/gnuwin32/bin
+-flex.commands = $$addGnuPath(flex) --noline --nounistd --outfile=${QMAKE_FILE_OUT} ${QMAKE_FILE_NAME}
++# NOTE: 'win_flex' and 'win_bison' can be found in qt5/gnuwin32/bin
++flex.commands = $$addGnuPath(win_flex) --noline --nounistd --outfile=${QMAKE_FILE_OUT} ${QMAKE_FILE_NAME}
+ flex.output = $${BUILDSUBDIR}${QMAKE_FILE_BASE}_lex.cpp
+ flex.input = FLEX_SOURCES
+ flex.dependency_type = TYPE_C
+ flex.variable_out = GENERATED_SOURCES
+ QMAKE_EXTRA_COMPILERS += flex
+ 
+ defineReplace(myDirName) { return($$dirname(1)) }
+-bison.commands = $$addGnuPath(bison) --no-lines --skeleton=yacc.c --defines=${QMAKE_FILE_OUT} \
++bison.commands = $$addGnuPath(win_bison) --no-lines --skeleton=yacc.c --defines=${QMAKE_FILE_OUT} \
+                 --output=${QMAKE_FUNC_FILE_OUT_myDirName}$$QMAKE_DIR_SEP${QMAKE_FILE_OUT_BASE}.cpp \
+                 ${QMAKE_FILE_NAME}$$escape_expand(\\n\\t) \
+                 @echo // EOF>>${QMAKE_FUNC_FILE_OUT_myDirName}$$QMAKE_DIR_SEP${QMAKE_FILE_OUT_BASE}.cpp
+ bison.output = $${BUILDSUBDIR}${QMAKE_FILE_BASE}_tab.h
+ bison.input = BISON_SOURCES

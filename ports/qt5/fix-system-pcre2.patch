@@ -1,0 +1,18 @@
+diff --git a/qtbase/src/corelib/configure.json b/qtbase/src/corelib/configure.json
+index a5b69a2..01c5cde 100644
+--- a/qtbase/src/corelib/configure.json
++++ b/qtbase/src/corelib/configure.json
+@@ -159,7 +159,12 @@
+                 ]
+             },
+             "sources": [
+-                "-lpcre2-16"
++                {
++                    "builds": {
++                        "debug": "-lpcre2-16d",
++                        "release": "-lpcre2-16"
++                    }
++                }
+             ]
+         },
+         "pps": {

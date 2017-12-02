@@ -9,11 +9,15 @@ function(configure_qt)
         set(PLATFORM "win32-msvc2017")
     endif()
 
+	vcpkg_find_acquire_program(FLEX)
+	get_filename_component(FLEX_EXE_PATH ${FLEX} DIRECTORY)
+	vcpkg_find_acquire_program(GPERF)
+	get_filename_component(GPERF_EXE_PATH ${GPERF} DIRECTORY)
     vcpkg_find_acquire_program(PERL)
     get_filename_component(PERL_EXE_PATH ${PERL} DIRECTORY)
 
     file(REMOVE_RECURSE ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg)
-    set(ENV{PATH} "$ENV{PATH};${PERL_EXE_PATH}")
+    set(ENV{PATH} "$ENV{PATH};${PERL_EXE_PATH};${GPERF_EXE_PATH};${FLEX_EXE_PATH};")
 
     if(DEFINED VCPKG_CRT_LINKAGE AND VCPKG_CRT_LINKAGE STREQUAL static)
         list(APPEND _csc_OPTIONS
@@ -41,8 +45,8 @@ function(configure_qt)
         LOGNAME config-${TARGET_TRIPLET}-dbg
     )
     message(STATUS "Configuring ${TARGET_TRIPLET}-dbg done")
-    
     message(STATUS "Configuring ${TARGET_TRIPLET}-rel")
+
     file(MAKE_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel)
     vcpkg_execute_required_process(
         COMMAND "${_csc_SOURCE_PATH}/configure.bat" ${_csc_OPTIONS} ${_csc_OPTIONS_RELEASE}
@@ -60,5 +64,4 @@ function(configure_qt)
         LOGNAME config-${TARGET_TRIPLET}-rel
     )
     message(STATUS "Configuring ${TARGET_TRIPLET}-rel done")
-
 endfunction()
