@@ -1,0 +1,713 @@
+find_package(Qt53DAnimation REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::3DAnimation Qt5::3DAnimationPrivate)
+
+    find_package(Qt53DCore REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::3DCore Qt5::3DCorePrivate)
+
+    find_package(Qt53DExtras REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::3DExtras Qt5::3DExtrasPrivate)
+
+    find_package(Qt53DInput REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::3DInput Qt5::3DInputPrivate)
+
+    find_package(Qt53DLogic REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::3DLogic Qt5::3DLogicPrivate)
+
+    find_package(Qt53DQuick REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::3DQuick Qt5::3DQuickPrivate)
+
+    find_package(Qt53DQuickAnimation REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::3DQuickAnimation Qt5::3DQuickAnimationPrivate)
+
+    find_package(Qt53DQuickExtras REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::3DQuickExtras Qt5::3DQuickExtrasPrivate)
+
+    find_package(Qt53DQuickInput REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::3DQuickInput Qt5::3DQuickInputPrivate)
+
+    find_package(Qt53DQuickRender REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::3DQuickRender Qt5::3DQuickRenderPrivate)
+
+    find_package(Qt53DQuickScene2D REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::3DQuickScene2D Qt5::3DQuickScene2DPrivate)
+
+    find_package(Qt53DRender REQUIRED)
+    # Note: 4 targets were omitted
+    target_link_libraries(main PRIVATE Qt5::3DRender Qt5::3DRenderPrivate Qt5::AssimpSceneImportPlugin Qt5::DefaultGeometryLoaderPlugin)
+
+    find_package(Qt5AxBase REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::AxBase Qt5::AxBasePrivate)
+
+    find_package(Qt5AxContainer REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::AxContainer Qt5::AxContainerPrivate)
+
+    find_package(Qt5AxServer REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::AxServer Qt5::AxServerPrivate)
+
+    find_package(Qt5Bluetooth REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::Bluetooth Qt5::BluetoothPrivate)
+
+    find_package(Qt5Charts REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::Charts Qt5::ChartsPrivate)
+
+    find_package(Qt5Concurrent REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::Concurrent Qt5::ConcurrentPrivate)
+
+    find_package(Qt5Core REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::Core Qt5::CorePrivate Qt5::WinMain)
+
+    find_package(Qt5DBus REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::DBus Qt5::DBusPrivate)
+
+    find_package(Qt5DataVisualization REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::DataVisualization Qt5::DataVisualizationPrivate)
+
+    find_package(Qt5Designer REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::Designer Qt5::DesignerPrivate Qt5::QAxWidgetPlugin Qt5::QQuickWidgetPlugin)
+
+    find_package(Qt5Gamepad REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::Gamepad Qt5::GamepadPrivate Qt5::QXInputGamepadBackendPlugin)
+
+    find_package(Qt5Gui REQUIRED)
+    # Note: 15 targets were omitted
+    target_link_libraries(main PRIVATE Qt5::Gui Qt5::GuiPrivate Qt5::Gui_EGL Qt5::Gui_GLESv2)
+
+    find_package(Qt5Help REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::Help Qt5::HelpPrivate)
+
+    find_package(Qt5Location REQUIRED)
+    # Note: 3 targets were omitted
+    target_link_libraries(main PRIVATE Qt5::Location Qt5::LocationPrivate Qt5::GeoServiceProviderFactoryEsri Qt5::QGeoServiceProviderFactoryItemsOverlay)
+
+    find_package(Qt5Multimedia REQUIRED)
+    # Note: 4 targets were omitted
+    target_link_libraries(main PRIVATE Qt5::Multimedia Qt5::MultimediaPrivate Qt5::AudioCaptureServicePlugin Qt5::DSServicePlugin)
+
+    find_package(Qt5MultimediaWidgets REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::MultimediaWidgets Qt5::MultimediaWidgetsPrivate)
+
+    find_package(Qt5Network REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::Network Qt5::NetworkPrivate Qt5::QGenericEnginePlugin Qt5::QNativeWifiEnginePlugin)
+
+    find_package(Qt5NetworkAuth REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::NetworkAuth Qt5::NetworkAuthPrivate)
+
+    find_package(Qt5Nfc REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::Nfc Qt5::NfcPrivate)
+
+    find_package(Qt5OpenGL REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::OpenGL Qt5::OpenGLPrivate)
+
+    find_package(Qt5OpenGLExtensions REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::OpenGLExtensions Qt5::OpenGLExtensionsPrivate)
+
+    find_package(Qt5Positioning REQUIRED)
+    # Note: 1 targets were omitted
+    target_link_libraries(main PRIVATE Qt5::Positioning Qt5::PositioningPrivate Qt5::QGeoPositionInfoSourceFactoryGeoclue Qt5::QGeoPositionInfoSourceFactoryPoll)
+
+    find_package(Qt5PrintSupport REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::PrintSupport Qt5::PrintSupportPrivate Qt5::QWindowsPrinterSupportPlugin)
+
+    find_package(Qt5Purchasing REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::Purchasing Qt5::PurchasingPrivate)
+
+    find_package(Qt5Qml REQUIRED)
+    # Note: 8 targets were omitted
+    target_link_libraries(main PRIVATE Qt5::Qml Qt5::QmlPrivate Qt5::QDebugMessageServiceFactory Qt5::QLocalClientConnectionFactory)
+
+    find_package(Qt5Quick REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::Quick Qt5::QuickPrivate Qt5::QSGD3D12Adaptation)
+
+    find_package(Qt5QuickControls2 REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::QuickControls2 Qt5::QuickControls2Private)
+
+    find_package(Qt5QuickTest REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::QuickTest Qt5::QuickTestPrivate)
+
+    find_package(Qt5QuickWidgets REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::QuickWidgets Qt5::QuickWidgetsPrivate)
+
+    find_package(Qt5RemoteObjects REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::RemoteObjects Qt5::RemoteObjectsPrivate)
+
+    find_package(Qt5RepParser REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::RepParser Qt5::RepParserPrivate)
+
+    find_package(Qt5Script REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::Script Qt5::ScriptPrivate)
+
+    find_package(Qt5ScriptTools REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::ScriptTools Qt5::ScriptToolsPrivate)
+
+    find_package(Qt5Scxml REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::Scxml Qt5::ScxmlPrivate)
+
+    find_package(Qt5Sensors REQUIRED)
+    # Note: 1 targets were omitted
+    target_link_libraries(main PRIVATE Qt5::Sensors Qt5::SensorsPrivate Qt5::QShakeSensorGesturePlugin Qt5::QtSensorGesturePlugin)
+
+    find_package(Qt5SerialBus REQUIRED)
+    # Note: 2 targets were omitted
+    target_link_libraries(main PRIVATE Qt5::SerialBus Qt5::SerialBusPrivate Qt5::PeakCanBusPlugin Qt5::SystecCanBusPlugin)
+
+    find_package(Qt5SerialPort REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::SerialPort Qt5::SerialPortPrivate)
+
+    find_package(Qt5Sql REQUIRED)
+    # Note: 1 targets were omitted
+    target_link_libraries(main PRIVATE Qt5::Sql Qt5::SqlPrivate Qt5::QODBCDriverPlugin Qt5::QPSQLDriverPlugin)
+
+    find_package(Qt5Svg REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::Svg Qt5::SvgPrivate Qt5::QSvgIconPlugin Qt5::QSvgPlugin)
+
+    find_package(Qt5Test REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::Test Qt5::TestPrivate)
+
+    find_package(Qt5TextToSpeech REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::TextToSpeech Qt5::TextToSpeechPrivate Qt5::QTextToSpeechPluginSapi)
+
+    find_package(Qt5UiPlugin REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::UiPlugin Qt5::UiPluginPrivate)
+
+    find_package(Qt5UiTools REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::UiTools Qt5::UiToolsPrivate)
+
+    find_package(Qt5WebChannel REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::WebChannel Qt5::WebChannelPrivate)
+
+    find_package(Qt5WebSockets REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::WebSockets Qt5::WebSocketsPrivate)
+
+    find_package(Qt5Widgets REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::Widgets Qt5::WidgetsPrivate Qt5::QWindowsVistaStylePlugin)
+
+    find_package(Qt5WinExtras REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::WinExtras Qt5::WinExtrasPrivate)
+
+    find_package(Qt5Xml REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::Xml Qt5::XmlPrivate)
+
+    find_package(Qt5XmlPatterns REQUIRED)
+    target_link_libraries(main PRIVATE Qt5::XmlPatterns Qt5::XmlPatternsPrivate)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
