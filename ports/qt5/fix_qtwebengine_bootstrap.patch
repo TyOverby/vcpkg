@@ -1,0 +1,17 @@
+diff --git a/qtwebengine/src/3rdparty/chromium/tools/gn/bootstrap/bootstrap.py b/qtwebengine/src/3rdparty/chromium/tools/gn/bootstrap/bootstrap.py
+index a5b69a2..01c5cde 100644
+--- a/qtwebengine/src/3rdparty/chromium/tools/gn/bootstrap/bootstrap.py
++++ b/qtwebengine/src/3rdparty/chromium/tools/gn/bootstrap/bootstrap.py
+@@ -70,4 +70,4 @@
+     build_root = os.getcwd()
+ 
+-  print 'Building gn manually in a temporary directory for bootstrapping...' 
++  print('Building gn manually in a temporary directory for bootstrapping...')
+   build_gn_with_ninja_manually(tempdir, options)
+@@ -85,3 +85,3 @@
+   else:
+-    print('Building gn using itself to %s...' % build_rel)
++    print('Building gn using itself to %s...' % build_rel)
+     build_gn_with_gn(temp_gn, build_root, options)
+	 
+	 C:\Sources\Extern\vcpkg\buildtrees\qt5\src\qt-5.9.3\qtwebengine/src/3rdparty/chromium/tools/gn/bootstrap/bootstrap.py
