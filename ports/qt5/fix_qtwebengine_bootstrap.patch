@@ -78,32 +78,28 @@ index a5b69a2..01c5cde 100644
 -  except Exception, e:
 +  except Exception as e:
      raise Exception("Unexpected error while reading %s: %s" % (path, str(e)))
-	 
-	 
-  File "C:/Sources/Extern/vcpkg/buildtrees/qt5/src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/gypi_to_gn.py", line 184
-    print gn_helpers.ToGNString(data)
-                   ^
-SyntaxError: invalid syntax
-  File "C:/Sources/Extern/vcpkg/buildtrees/qt5/src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/gypi_to_gn.py", line 184
-    print gn_helpers.ToGNString(data)
-                   ^
-SyntaxError: invalid syntax
-  File "C:/Sources/Extern/vcpkg/buildtrees/qt5/src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/util/version.py", line 71
-    print repr(key), repr(val)
-             ^
-SyntaxError: invalid syntax
-  File "C:/Sources/Extern/vcpkg/buildtrees/qt5/src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/gypi_to_gn.py", line 184
-    print gn_helpers.ToGNString(data)
-                   ^
-SyntaxError: invalid syntax
-Traceback (most recent call last):
-  File "C:/Sources/Extern/vcpkg/buildtrees/qt5/src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/toolchain/win/setup_toolchain.py", line 217, in <module>
-    main()
-  File "C:/Sources/Extern/vcpkg/buildtrees/qt5/src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/toolchain/win/setup_toolchain.py", line 195, in main
-    env_block = _FormatAsEnvironmentBlock(env)
-  File "C:/Sources/Extern/vcpkg/buildtrees/qt5/src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/toolchain/win/setup_toolchain.py", line 148, in _FormatAsEnvironmentBlock
-    for key, value in envvar_dict.iteritems():
-AttributeError: '_Environ' object has no attribute 'iteritems'
-Command '['C:\\Sources\\Extern\\vcpkg\\buildtrees\\qt5\\x64-windows-rel\\qtwebengine\\src\\3rdparty\\chromium\\tools\\gn\\out\\Release\\gn.exe', 'gen', 'C:\\Sources\\Extern\\vcpkg\\buildtrees\\qt5\\x64-windows-rel\\qtwebengine\\src\\3rdparty\\chromium\\tools\\gn\\out\\Release', '--args=use_qt=true is_component_build=false is_shared=true enable_media_router=false enable_nacl=false enable_remoting=false enable_web_speech=false use_experimental_allocator_shim=false use_allocator="none" v8_use_external_startup_data=false treat_warnings_as_errors=false enable_basic_printing=true enable_print_preview=true enable_pdf=true enable_plugins=true enable_widevine=true enable_spellcheck=true enable_webrtc=true symbol_level=0 remove_webcore_debug_symbols=true remove_v8base_debug_symbols=true is_clang=false use_sysroot=false use_kerberos=true enable_notifications=false enable_session_service=false ninja_use_custom_environment_files=false is_multi_dll_chrome=false win_linker_timing=true use_incremental_linking=false visual_studio_version=2017 visual_studio_path="C:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise" windows_sdk_path="C:/Program Files (x86)/Windows Kits/10" target_cpu="x64" is_debug=false', '--script-executable=C:\\Sources\\Extern\\vcpkg\\downloads\\tools\\python\\python3\\python.exe']' returned non-zero exit status 1Project ERROR: GN build error!
-jom: C:\Sources\Extern\vcpkg\buildtrees\qt5\x64-windows-rel\qtwebengine\src\buildtools\Makefile [sub-gn-pro-make_first] Error 3
-jom: C:\Sources\Extern\vcpkg\buildtrees\qt5\x64-windows-rel\qtwebengine\src\Makefile [sub-buildtools-make_first] Error 2
+@@ -184,1 +184,1 @@	 
+-  print gn_helpers.ToGNString(data)
++  print(gn_helpers.ToGNString(data))
+@@ -186,5 +186,5 @@	 
+ if __name__ == '__main__':
+   try:
+     main()
+-  except Exception, e:
++  except Exception as e:
+-    print str(e)
++    print(str(e))
+     sys.exit(1)
+diff --git a/qtwebengine/src/3rdparty/chromium/build/util/version.py b/qtwebengine/src/3rdparty/chromium/build/util/version.py
+index a5b69a2..01c5cde 100644
+--- a/qtwebengine/src/3rdparty/chromium/build/util/version.py
++++ b/qtwebengine/src/3rdparty/chromium/build/util/version.py
+@@ -67,1 +67,1 @@
+-  for key, val in values.iteritems():
++  for key, val in values.tems():	
+@@ -71,1 +71,1 @@
+-      print repr(key), repr(val)
++      print(repr(key), repr(val))
+@@ -164,1 +164,1 @@
+-    print contents
++    print(contents)
