@@ -1,7 +1,7 @@
-diff --git a/qtwebengine/src/3rdparty/chromium/tools/gn/bootstrap/bootstrap.py b/qtwebengine/src/3rdparty/chromium/tools/gn/bootstrap/bootstrap.py
+diff --git a/qtbase/src/corelib/configure.json b/src/corelib/configure.json b/qtbase/src/corelib/configure.json b/src/corelib/configure.json
 index a5b69a2..01c5cde 100644
---- a/qtwebengine/src/3rdparty/chromium/tools/gn/bootstrap/bootstrap.py
-+++ b/qtwebengine/src/3rdparty/chromium/tools/gn/bootstrap/bootstrap.py
+--- a/qtbase/src/corelib/configure.json
++++ b/qtbase/src/corelib/configure.json
 @@ -159,7 +159,12 @@
                  ]
              },
@@ -16,5 +16,3 @@ index a5b69a2..01c5cde 100644
              ]
          },
          "pps": {
-
-C:\Sources\Extern\vcpkg\buildtrees\qt5\src\qt-5.9.3\qtwebengine/src/3rdparty/chromium/tools/gn/bootstrap/bootstrap.py

@@ -13,5 +13,97 @@ index a5b69a2..01c5cde 100644
 -    print 'Building gn using itself to %s...' % build_rel
 +    print('Building gn using itself to %s...' % build_rel)
      build_gn_with_gn(temp_gn, build_root, options)
+@@ -262,4 +262,4 @@	 
+     ])
+ 
+-  for library, settings in static_libraries.iteritems():
++  for library, settings in static_libraries.items():
+     for src_file in settings['sources']:
+@@ -270,4 +270,4 @@	 
+         ' '.join([src_to_obj(src_file) for src_file in settings['sources']])))
+ 
+-  for executable, settings in executables.iteritems():
++  for executable, settings in executables.items():
+     for src_file in settings['sources']:	 
+@@ -129,4 +129,4 @@
+         return run_build(tempdir, options)
+   except subprocess.CalledProcessError as e:
+-    print >> sys.stderr, str(e)
++    sys.stderr.write(str(e))
+     return 1	 
+diff --git a/qtwebengine/src/3rdparty/chromium/build/toolchain/win/setup_toolchain.py b/qtwebengine/src/3rdparty/chromium/build/toolchain/win/setup_toolchain.py
+index a5b69a2..01c5cde 100644
+--- a/qtwebengine/src/3rdparty/chromium/build/toolchain/win/setup_toolchain.py
++++ b/qtwebengine/src/3rdparty/chromium/build/toolchain/win/setup_toolchain.py
+@@ -208,10 +208,10 @@
+     with open('environment.winrt_' + cpu, 'wb') as f:
+       f.write(env_block)
+ 
+   assert vc_bin_dir
+-  print 'vc_bin_dir = ' + gn_helpers.ToGNString(vc_bin_dir)
++  print('vc_bin_dir = ' + gn_helpers.ToGNString(vc_bin_dir))
+   assert include
+-  print 'include_flags = ' + gn_helpers.ToGNString(include)
++  print('include_flags = ' + gn_helpers.ToGNString(include))
+ 
+ if __name__ == '__main__':
+   main()
+diff --git a/qtwebengine/src/3rdparty/chromium/build/win_is_xtree_patched.py b/qtwebengine/src/3rdparty/chromium/build/win_is_xtree_patched.py
+index a5b69a2..01c5cde 100644
+--- a/qtwebengine/src/3rdparty/chromium/build/win_is_xtree_patched.py
++++ b/qtwebengine/src/3rdparty/chromium/build/win_is_xtree_patched.py
+@@ -26,1 +26,1 @@
+-    print DoMain([])
++    print(DoMain([]))
+diff --git a/qtwebengine/src/3rdparty/chromium/google_apis/build/check_internal.py b/qtwebengine/src/3rdparty/chromium/google_apis/build/check_internal.py
+index a5b69a2..01c5cde 100644
+--- a/qtwebengine/src/3rdparty/chromium/google_apis/build/check_internal.py
++++ b/qtwebengine/src/3rdparty/chromium/google_apis/build/check_internal.py
+@@ -17,4 +17,4 @@
+   if os.path.exists(sys.argv[1]):
+-    print 1
++    print(1)
+   else:
+-    print 0
++    print(0)
+diff --git a/qtwebengine/src/3rdparty/chromium/build/gypi_to_gn.py b/qtwebengine/src/3rdparty/chromium/build/gypi_to_gn.py
+index a5b69a2..01c5cde 100644
+--- a/qtwebengine/src/3rdparty/chromium/build/gypi_to_gn.py
++++ b/qtwebengine/src/3rdparty/chromium/build/gypi_to_gn.py
+@@ -103,5 +103,5 @@
+-  except SyntaxError, e:
++  except SyntaxError as e:
+     e.filename = path
+     raise
+-  except Exception, e:
++  except Exception as e:
+     raise Exception("Unexpected error while reading %s: %s" % (path, str(e)))
 	 
-	 C:\Sources\Extern\vcpkg\buildtrees\qt5\src\qt-5.9.3\qtwebengine/src/3rdparty/chromium/tools/gn/bootstrap/bootstrap.py
+	 
+  File "C:/Sources/Extern/vcpkg/buildtrees/qt5/src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/gypi_to_gn.py", line 184
+    print gn_helpers.ToGNString(data)
+                   ^
+SyntaxError: invalid syntax
+  File "C:/Sources/Extern/vcpkg/buildtrees/qt5/src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/gypi_to_gn.py", line 184
+    print gn_helpers.ToGNString(data)
+                   ^
+SyntaxError: invalid syntax
+  File "C:/Sources/Extern/vcpkg/buildtrees/qt5/src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/util/version.py", line 71
+    print repr(key), repr(val)
+             ^
+SyntaxError: invalid syntax
+  File "C:/Sources/Extern/vcpkg/buildtrees/qt5/src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/gypi_to_gn.py", line 184
+    print gn_helpers.ToGNString(data)
+                   ^
+SyntaxError: invalid syntax
+Traceback (most recent call last):
+  File "C:/Sources/Extern/vcpkg/buildtrees/qt5/src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/toolchain/win/setup_toolchain.py", line 217, in <module>
+    main()
+  File "C:/Sources/Extern/vcpkg/buildtrees/qt5/src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/toolchain/win/setup_toolchain.py", line 195, in main
+    env_block = _FormatAsEnvironmentBlock(env)
+  File "C:/Sources/Extern/vcpkg/buildtrees/qt5/src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/toolchain/win/setup_toolchain.py", line 148, in _FormatAsEnvironmentBlock
+    for key, value in envvar_dict.iteritems():
+AttributeError: '_Environ' object has no attribute 'iteritems'
+Command '['C:\\Sources\\Extern\\vcpkg\\buildtrees\\qt5\\x64-windows-rel\\qtwebengine\\src\\3rdparty\\chromium\\tools\\gn\\out\\Release\\gn.exe', 'gen', 'C:\\Sources\\Extern\\vcpkg\\buildtrees\\qt5\\x64-windows-rel\\qtwebengine\\src\\3rdparty\\chromium\\tools\\gn\\out\\Release', '--args=use_qt=true is_component_build=false is_shared=true enable_media_router=false enable_nacl=false enable_remoting=false enable_web_speech=false use_experimental_allocator_shim=false use_allocator="none" v8_use_external_startup_data=false treat_warnings_as_errors=false enable_basic_printing=true enable_print_preview=true enable_pdf=true enable_plugins=true enable_widevine=true enable_spellcheck=true enable_webrtc=true symbol_level=0 remove_webcore_debug_symbols=true remove_v8base_debug_symbols=true is_clang=false use_sysroot=false use_kerberos=true enable_notifications=false enable_session_service=false ninja_use_custom_environment_files=false is_multi_dll_chrome=false win_linker_timing=true use_incremental_linking=false visual_studio_version=2017 visual_studio_path="C:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise" windows_sdk_path="C:/Program Files (x86)/Windows Kits/10" target_cpu="x64" is_debug=false', '--script-executable=C:\\Sources\\Extern\\vcpkg\\downloads\\tools\\python\\python3\\python.exe']' returned non-zero exit status 1Project ERROR: GN build error!
+jom: C:\Sources\Extern\vcpkg\buildtrees\qt5\x64-windows-rel\qtwebengine\src\buildtools\Makefile [sub-gn-pro-make_first] Error 3
+jom: C:\Sources\Extern\vcpkg\buildtrees\qt5\x64-windows-rel\qtwebengine\src\Makefile [sub-buildtools-make_first] Error 2
