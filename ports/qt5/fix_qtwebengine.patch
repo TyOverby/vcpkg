@@ -2,10 +2,13 @@ diff --git a/qtwebengine/src/3rdparty/chromium/build/toolchain/get_concurrent_li
 index a5b69a2..01c5cde 100644
 --- a/qtwebengine/src/3rdparty/chromium/build/toolchain/get_concurrent_links.py
 +++ b/qtwebengine/src/3rdparty/chromium/build/toolchain/get_concurrent_links.py
-@@ -72,2 +72,1 @@
+@@ -70,5 +70,4 @@
+   options, _ = parser.parse_args()
+ 
 -  print _GetDefaultConcurrentLinks(options.mem_per_link_gb,
--                                   options.reserve_mem_gb)
+-                                    options.reserve_mem_gb)
 +  print _GetDefaultConcurrentLinks(options.mem_per_link_gb, options.reserve_mem_gb)
+   return 0
 diff --git a/qtwebengine/src/3rdparty/chromium/mojo/public/tools/bindings/mojom_bindings_generator.py b/qtwebengine/src/3rdparty/chromium/mojo/public/tools/bindings/mojom_bindings_generator.py
 index a5b69a2..01c5cde 100644
 --- a/qtwebengine/src/3rdparty/chromium/mojo/public/tools/bindings/mojom_bindings_generator.py

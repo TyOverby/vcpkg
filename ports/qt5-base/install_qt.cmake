@@ -30,6 +30,7 @@ function(install_qt)
     message(STATUS "Package ${TARGET_TRIPLET}-dbg done")
     
     message(STATUS "Package ${TARGET_TRIPLET}-rel")
+
     set(ENV{PATH} "${CURRENT_INSTALLED_DIR}/bin;${_path}")
     vcpkg_execute_required_process(
         COMMAND ${JOM} /J ${JOBS}
@@ -42,7 +43,21 @@ function(install_qt)
         LOGNAME package-${TARGET_TRIPLET}-rel
     )
     message(STATUS "Package ${TARGET_TRIPLET}-rel done")
-    
+ 
+    message(STATUS "Package ${TARGET_TRIPLET}-dbg")
+    set(ENV{PATH} "${CURRENT_INSTALLED_DIR}/debug/bin;${_path}")
+    vcpkg_execute_required_process(
+        COMMAND ${JOM} /J ${JOBS}
+        WORKING_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg
+        LOGNAME build-${TARGET_TRIPLET}-dbg
+    )
+    vcpkg_execute_required_process(
+        COMMAND ${JOM} /J ${JOBS} install
+        WORKING_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg
+        LOGNAME package-${TARGET_TRIPLET}-dbg
+    )
     set(ENV{PATH} "${_path}")
-    
+    message(STATUS "Package ${TARGET_TRIPLET}-dbg done")
+	
+
 endfunction()
