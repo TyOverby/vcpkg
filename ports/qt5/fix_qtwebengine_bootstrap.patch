@@ -78,10 +78,12 @@ index a5b69a2..01c5cde 100644
 -  except Exception, e:
 +  except Exception as e:
      raise Exception("Unexpected error while reading %s: %s" % (path, str(e)))
-@@ -184,1 +184,1 @@	 
+@@ -182,10 +182,10 @@	 
+       del data[key]
+ 
 -  print gn_helpers.ToGNString(data)
 +  print(gn_helpers.ToGNString(data))
-@@ -186,5 +186,5 @@	 
+ 
  if __name__ == '__main__':
    try:
      main()
@@ -94,12 +96,53 @@ diff --git a/qtwebengine/src/3rdparty/chromium/build/util/version.py b/qtwebengi
 index a5b69a2..01c5cde 100644
 --- a/qtwebengine/src/3rdparty/chromium/build/util/version.py
 +++ b/qtwebengine/src/3rdparty/chromium/build/util/version.py
-@@ -67,1 +67,1 @@
+@@ -67,6 +67,6 @@
 -  for key, val in values.iteritems():
-+  for key, val in values.tems():	
-@@ -71,1 +71,1 @@
++  for key, val in values.items():
+     try:
+       contents = contents.replace('@' + key + '@', val)
+     except TypeError:
 -      print repr(key), repr(val)
 +      print(repr(key), repr(val))
-@@ -164,1 +164,1 @@
+   return contents
+@@ -161,6 +161,6 @@
+   if options.output is not None:
+     write_if_changed(options.output, contents)
+   else:
 -    print contents
 +    print(contents)
+ 
+   return 0
+
+  File "C:/Sources/Extern/vcpkg/buildtrees/qt5/src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/util/version.py", line 144, in main
+    for key, val in evals.iteritems():
+AttributeError: 'dict' object has no attribute 'iteritems'
+  File "C:/Sources/Extern/vcpkg/buildtrees/qt5/src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/toolchain/win/setup_toolchain.py", line 148, in _FormatAsEnvironmentBlock
+    for key, value in envvar_dict.iteritems():
+AttributeError: '_Environ' object has no attribute 'iteritems'
+  File "C:/Sources/Extern/vcpkg/buildtrees/qt5/src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/toolchain/win/setup_toolchain.py", line 197, in main
+    f.write(env_block)
+	  File "C:/Sources/Extern/vcpkg/buildtrees/qt5/src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/toolchain/win\..\..\gn_helpers.py", line 32, in ToGNString
+    if isinstance(value, basestring):
+NameError: name 'basestring' is not defined
+  File "C:/Sources/Extern/vcpkg/buildtrees/qt5/src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/toolchain/win\..\..\gn_helpers.py", line 32, in ToGNString
+    if isinstance(value, basestring):
+NameError: name 'basestring' is not defined
+  File "C:/Sources/Extern/vcpkg/buildtrees/qt5/src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/toolchain/win\..\..\gn_helpers.py", line 32, in ToGNString
+    if isinstance(value, unicode):
+NameError: name 'unicode' is not defined
+  File "C:/Sources/Extern/vcpkg/buildtrees/qt5/src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/toolchain/get_concurrent_links.py", line 72
+    print _GetDefaultConcurrentLinks(options.mem_per_link_gb,
+                                   ^
+SyntaxError: invalid syntax
+
+ File "../../../../../../../../../src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/toolchain/win/tool_wrapper.py", line 136
+  print line
+
+             ^
+ File "../../../../../../../../../src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/build/win/message_compiler.py", line 27
+   print e.output
+   C:\Sources\Extern\vcpkg\downloads\tools\python\python3\python.exe ../../../../../../../../../src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/tools/gn/last_commit_position.py ../../../../../../../../../src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/ gen/tools/gn/last_commit_position.h TOOLS_GN_LAST_COMMIT_POSITION_H_
+  File "../../../../../../../../../src/qt-5.9.3/qtwebengine/src/3rdparty/chromium/tools/gn/last_commit_position.py", line 91
+
+    print "Wrong number of arguments"

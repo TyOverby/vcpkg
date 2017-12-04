@@ -8,9 +8,11 @@ function(install_qt)
     endif()
 
     vcpkg_find_acquire_program(JOM)
-    vcpkg_find_acquire_program(PYTHON3)
-    get_filename_component(PYTHON3_EXE_PATH ${PYTHON3} DIRECTORY)
-    set(ENV{PATH} "${PYTHON3_EXE_PATH};$ENV{PATH}")
+
+	vcpkg_find_acquire_program(PYTHON2)
+    get_filename_component(PYTHON2_EXE_PATH ${PYTHON2} DIRECTORY)
+    set(ENV{PATH} "${PYTHON2_EXE_PATH};$ENV{PATH}")
+	
     set(_path "$ENV{PATH}")
 
     message(STATUS "Package ${TARGET_TRIPLET}-dbg")
