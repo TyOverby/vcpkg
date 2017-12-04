@@ -35,7 +35,7 @@ endif()
 
 vcpkg_apply_patches(
     SOURCE_PATH ${SOURCE_PATH}
-	PATCHES "${CMAKE_CURRENT_LIST_DIR}/fix-system-pcre2.patch" "${CMAKE_CURRENT_LIST_DIR}/fix_flex_angle.patch"
+	PATCHES "${CMAKE_CURRENT_LIST_DIR}/fix-system-pcre2.patch" "${CMAKE_CURRENT_LIST_DIR}/fix_flex_angle.patch" "${CMAKE_CURRENT_LIST_DIR}/fix_qtwebengine.patch"
     #PATCHES "${CMAKE_CURRENT_LIST_DIR}/fix-system-pcre2.patch" "${CMAKE_CURRENT_LIST_DIR}/fix_flex_angle.patch" "${CMAKE_CURRENT_LIST_DIR}/fix_qtwebengine_bootstrap.patch"
 )
 
@@ -90,7 +90,7 @@ file(REMOVE ${BINARY_TOOLS})
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/share)
 
 vcpkg_execute_required_process(
-    COMMAND ${PYTHON3} ${CMAKE_CURRENT_LIST_DIR}/fixcmake.py
+    COMMAND ${PYTHON2} ${CMAKE_CURRENT_LIST_DIR}/fixcmake.py
     WORKING_DIRECTORY ${CURRENT_PACKAGES_DIR}/share/cmake
     LOGNAME fix-cmake
 )
@@ -108,11 +108,11 @@ vcpkg_copy_tool_dependencies(${CURRENT_PACKAGES_DIR}/tools/qt5)
 #   check_matching_debug_and_release_binaries(dbg_libs, rel_libs)
 # requires the two sets to be of equal size!
 # Alt. approach, create dummy folder instead:
-#file(MAKE_DIRECTORY ${CURRENT_PACKAGES_DIR}/debug/lib/dont-use)
-#file(COPY ${CURRENT_PACKAGES_DIR}/debug/lib/Qt5Bootstrap.lib DESTINATION ${CURRENT_PACKAGES_DIR}/debug/lib/dont-use)
-#file(COPY ${CURRENT_PACKAGES_DIR}/debug/lib/Qt5Bootstrap.prl DESTINATION ${CURRENT_PACKAGES_DIR}/debug/lib/dont-use)
-#file(REMOVE ${CURRENT_PACKAGES_DIR}/debug/lib/Qt5Bootstrap.lib)
-#file(REMOVE ${CURRENT_PACKAGES_DIR}/debug/lib/Qt5Bootstrap.prl)
+file(MAKE_DIRECTORY ${CURRENT_PACKAGES_DIR}/debug/lib/dont-use)
+file(COPY ${CURRENT_PACKAGES_DIR}/debug/lib/Qt5Bootstrap.lib DESTINATION ${CURRENT_PACKAGES_DIR}/debug/lib/dont-use)
+file(COPY ${CURRENT_PACKAGES_DIR}/debug/lib/Qt5Bootstrap.prl DESTINATION ${CURRENT_PACKAGES_DIR}/debug/lib/dont-use)
+file(REMOVE ${CURRENT_PACKAGES_DIR}/debug/lib/Qt5Bootstrap.lib)
+file(REMOVE ${CURRENT_PACKAGES_DIR}/debug/lib/Qt5Bootstrap.prl)
 #---------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------
@@ -122,28 +122,28 @@ vcpkg_copy_tool_dependencies(${CURRENT_PACKAGES_DIR}/tools/qt5)
 # never both. See http://doc.qt.io/qt-5/activeqt-server.html for more info.
 #
 # Create manual-link folders:
-#file(MAKE_DIRECTORY ${CURRENT_PACKAGES_DIR}/lib/manual-link)
-#file(MAKE_DIRECTORY ${CURRENT_PACKAGES_DIR}/debug/lib/manual-link)
+file(MAKE_DIRECTORY ${CURRENT_PACKAGES_DIR}/lib/manual-link)
+file(MAKE_DIRECTORY ${CURRENT_PACKAGES_DIR}/debug/lib/manual-link)
 #
 # Either have users explicitly link against qtmain.lib, qtmaind.lib:
-#file(COPY ${CURRENT_PACKAGES_DIR}/lib/qtmain.lib DESTINATION ${CURRENT_PACKAGES_DIR}/lib/manual-link)
-#file(COPY ${CURRENT_PACKAGES_DIR}/lib/qtmain.prl DESTINATION ${CURRENT_PACKAGES_DIR}/lib/manual-link)
-#file(REMOVE ${CURRENT_PACKAGES_DIR}/lib/qtmain.lib)
-#file(REMOVE ${CURRENT_PACKAGES_DIR}/lib/qtmain.prl)
-#file(COPY ${CURRENT_PACKAGES_DIR}/debug/lib/qtmaind.lib DESTINATION ${CURRENT_PACKAGES_DIR}/debug/lib/manual-link)
-#file(COPY ${CURRENT_PACKAGES_DIR}/debug/lib/qtmaind.prl DESTINATION ${CURRENT_PACKAGES_DIR}/debug/lib/manual-link)
-#file(REMOVE ${CURRENT_PACKAGES_DIR}/debug/lib/qtmaind.lib)
-#file(REMOVE ${CURRENT_PACKAGES_DIR}/debug/lib/qtmaind.prl)
+file(COPY ${CURRENT_PACKAGES_DIR}/lib/qtmain.lib DESTINATION ${CURRENT_PACKAGES_DIR}/lib/manual-link)
+file(COPY ${CURRENT_PACKAGES_DIR}/lib/qtmain.prl DESTINATION ${CURRENT_PACKAGES_DIR}/lib/manual-link)
+file(REMOVE ${CURRENT_PACKAGES_DIR}/lib/qtmain.lib)
+file(REMOVE ${CURRENT_PACKAGES_DIR}/lib/qtmain.prl)
+file(COPY ${CURRENT_PACKAGES_DIR}/debug/lib/qtmaind.lib DESTINATION ${CURRENT_PACKAGES_DIR}/debug/lib/manual-link)
+file(COPY ${CURRENT_PACKAGES_DIR}/debug/lib/qtmaind.prl DESTINATION ${CURRENT_PACKAGES_DIR}/debug/lib/manual-link)
+file(REMOVE ${CURRENT_PACKAGES_DIR}/debug/lib/qtmaind.lib)
+file(REMOVE ${CURRENT_PACKAGES_DIR}/debug/lib/qtmaind.prl)
 #
 # ... or have users explicitly link against Qt5AxServer.lib, Qt5AxServerd.lib:
-#file(COPY ${CURRENT_PACKAGES_DIR}/lib/Qt5AxServer.lib DESTINATION ${CURRENT_PACKAGES_DIR}/lib/manual-link)
-#file(COPY ${CURRENT_PACKAGES_DIR}/lib/Qt5AxServer.prl DESTINATION ${CURRENT_PACKAGES_DIR}/lib/manual-link)
-#file(REMOVE ${CURRENT_PACKAGES_DIR}/lib/Qt5AxServer.lib)
-#file(REMOVE ${CURRENT_PACKAGES_DIR}/lib/Qt5AxServer.prl)
-#file(COPY ${CURRENT_PACKAGES_DIR}/debug/lib/Qt5AxServerd.lib DESTINATION ${CURRENT_PACKAGES_DIR}/debug/lib/manual-link)
-#file(COPY ${CURRENT_PACKAGES_DIR}/debug/lib/Qt5AxServerd.prl DESTINATION ${CURRENT_PACKAGES_DIR}/debug/lib/manual-link)
-#file(REMOVE ${CURRENT_PACKAGES_DIR}/debug/lib/Qt5AxServerd.lib)
-#file(REMOVE ${CURRENT_PACKAGES_DIR}/debug/lib/Qt5AxServerd.prl)
+file(COPY ${CURRENT_PACKAGES_DIR}/lib/Qt5AxServer.lib DESTINATION ${CURRENT_PACKAGES_DIR}/lib/manual-link)
+file(COPY ${CURRENT_PACKAGES_DIR}/lib/Qt5AxServer.prl DESTINATION ${CURRENT_PACKAGES_DIR}/lib/manual-link)
+file(REMOVE ${CURRENT_PACKAGES_DIR}/lib/Qt5AxServer.lib)
+file(REMOVE ${CURRENT_PACKAGES_DIR}/lib/Qt5AxServer.prl)
+file(COPY ${CURRENT_PACKAGES_DIR}/debug/lib/Qt5AxServerd.lib DESTINATION ${CURRENT_PACKAGES_DIR}/debug/lib/manual-link)
+file(COPY ${CURRENT_PACKAGES_DIR}/debug/lib/Qt5AxServerd.prl DESTINATION ${CURRENT_PACKAGES_DIR}/debug/lib/manual-link)
+file(REMOVE ${CURRENT_PACKAGES_DIR}/debug/lib/Qt5AxServerd.lib)
+file(REMOVE ${CURRENT_PACKAGES_DIR}/debug/lib/Qt5AxServerd.prl)
 #---------------------------------------------------------------------------
 
 file(INSTALL ${SOURCE_PATH}/LICENSE.LGPLv3 DESTINATION  ${CURRENT_PACKAGES_DIR}/share/qt5 RENAME copyright)

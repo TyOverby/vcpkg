@@ -39,7 +39,6 @@ function(configure_qt)
             -qmldir ${CURRENT_PACKAGES_DIR}/debug/qml
             -headerdir ${CURRENT_PACKAGES_DIR}/include
             -I ${CURRENT_INSTALLED_DIR}/include
-			-I ${CURRENT_INSTALLED_DIR}/include/hunspell
             -L ${CURRENT_INSTALLED_DIR}/debug/lib
             -platform ${PLATFORM}
         WORKING_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg
@@ -59,7 +58,6 @@ function(configure_qt)
             -plugindir ${CURRENT_PACKAGES_DIR}/plugins
             -qmldir ${CURRENT_PACKAGES_DIR}/qml
             -I ${CURRENT_INSTALLED_DIR}/include
-			-I ${CURRENT_INSTALLED_DIR}/include/hunspell
             -L ${CURRENT_INSTALLED_DIR}/lib
             -platform ${PLATFORM}
         WORKING_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel
