@@ -16,21 +16,21 @@ include(configure_qt)
 include(install_qt)
 
 set(QT_MAJOR_VER "5")
-set(QT_MINOR_VER "9")
-set(QT_REV_VER "3")
+set(QT_MINOR_VER "10")
+set(QT_REV_VER "0")
 set(QT_FULL_VER "${QT_MAJOR_VER}.${QT_MINOR_VER}.${QT_REV_VER}")
 set(SOURCE_PATH "${CURRENT_BUILDTREES_DIR}/src/qt-${QT_FULL_VER}")
 
 
 
 vcpkg_download_distfile(ARCHIVE_FILE
-    URLS "http://download.qt.io/official_releases/qt/${QT_MAJOR_VER}.${QT_MINOR_VER}/${QT_FULL_VER}/single/qt-everywhere-opensource-src-${QT_FULL_VER}.tar.xz"
+    URLS "http://download.qt.io/official_releases/qt/${QT_MAJOR_VER}.${QT_MINOR_VER}/${QT_FULL_VER}/single/qt-everywhere-src-${QT_FULL_VER}.tar.xz"
     FILENAME "qt-${QT_FULL_VER}.tar.xy"
-    SHA512 3dbd545c2bcd576ae148c55c5ef3161e228e5aa3b180568ef69ccabc917bea446faddbb5d890b3fa8ff3ff896c78fa8ff1d990ba6f5f2a979bee6073b02e0a66
+    SHA512 22706bb5bfe943ee09f7750e473b2b46b879fd04220cb2325f4df8ffa0c128646e525bb1a90afe08d23ec9b949bfa87795cade4c8ae2ae63a5c6b33de94d95d5
 )
 vcpkg_extract_source_archive(${ARCHIVE_FILE})
-if (EXISTS ${CURRENT_BUILDTREES_DIR}/src/qt-everywhere-opensource-src-${QT_FULL_VER})
-    file(RENAME ${CURRENT_BUILDTREES_DIR}/src/qt-everywhere-opensource-src-${QT_FULL_VER} ${SOURCE_PATH})
+if (EXISTS ${CURRENT_BUILDTREES_DIR}/src/qt-everywhere-src-${QT_FULL_VER})
+    file(RENAME ${CURRENT_BUILDTREES_DIR}/src/qt-everywhere-src-${QT_FULL_VER} ${SOURCE_PATH})
 endif()
 
 vcpkg_apply_patches(
@@ -54,12 +54,14 @@ configure_qt(
         -system-pcre
         -system-harfbuzz
         -system-doubleconversion
-        -system-sqlite
+        #-system-sqlite
+		-qt-sqlite
         -sql-sqlite
         -sql-psql
         -feature-freetype
         -nomake examples -nomake tests
         -opengl dynamic # other options are "-no-opengl" and "-opengl angle" "-opengl dynamic"
+		-skip qtwebengine
 		#-no-angle
         -mp
         LIBJPEG_LIBS="-ljpeg"

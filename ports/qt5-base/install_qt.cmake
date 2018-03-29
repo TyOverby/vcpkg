@@ -33,12 +33,14 @@ function(install_qt)
 
     set(ENV{PATH} "${CURRENT_INSTALLED_DIR}/bin;${_path}")
     vcpkg_execute_required_process(
-        COMMAND ${JOM} /J ${JOBS}
+        COMMAND nmake
+#     	COMMAND ${JOM} /J ${JOBS}
         WORKING_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel
         LOGNAME build-${TARGET_TRIPLET}-rel
     )
     vcpkg_execute_required_process(
-        COMMAND ${JOM} /J ${JOBS} install
+		COMMAND nmake install
+#       COMMAND ${JOM} /J ${JOBS} install
         WORKING_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel
         LOGNAME package-${TARGET_TRIPLET}-rel
     )
@@ -47,12 +49,14 @@ function(install_qt)
     message(STATUS "Package ${TARGET_TRIPLET}-dbg")
     set(ENV{PATH} "${CURRENT_INSTALLED_DIR}/debug/bin;${_path}")
     vcpkg_execute_required_process(
-        COMMAND ${JOM} /J ${JOBS}
+        COMMAND nmake
+#     	COMMAND ${JOM} /J ${JOBS}
         WORKING_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg
         LOGNAME build-${TARGET_TRIPLET}-dbg
     )
     vcpkg_execute_required_process(
-        COMMAND ${JOM} /J ${JOBS} install
+		COMMAND nmake install
+#       COMMAND ${JOM} /J ${JOBS} install
         WORKING_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg
         LOGNAME package-${TARGET_TRIPLET}-dbg
     )
