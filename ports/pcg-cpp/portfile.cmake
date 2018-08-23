@@ -15,16 +15,23 @@ VCPKG_CONFIGURE_CMAKE(
     OPTIONS
 )
 
+
+
 vcpkg_install_cmake()
 
+if("${VCPKG_CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+vcpkg_fixup_cmake_targets(CONFIG_PATH "lib/cmake")
+else()
 vcpkg_fixup_cmake_targets(CONFIG_PATH "cmake")
+endif()
+
 
 # Put the licence file where vcpkg expects it
 file(COPY ${SOURCE_PATH}/license-mit.txt DESTINATION ${CURRENT_PACKAGES_DIR}/share/pcg-cpp)
 file(RENAME ${CURRENT_PACKAGES_DIR}/share/pcg-cpp/license-mit.txt ${CURRENT_PACKAGES_DIR}/share/pcg-cpp/copyright)
 
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug)
-
+file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/lib)
 # Copy the pcg-cpp header files
 file(INSTALL ${SOURCE_PATH}/include DESTINATION ${CURRENT_PACKAGES_DIR} FILES_MATCHING PATTERN "*.hpp")
 vcpkg_copy_pdbs()
