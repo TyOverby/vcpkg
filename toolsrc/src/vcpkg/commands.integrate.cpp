@@ -13,7 +13,7 @@
 namespace vcpkg::Commands::Integrate
 {
 #if defined(_WIN32)
-    static std::string create_appdata_shortcut(const std::string& target_path) noexcept
+    static std::string create_appdata_targets_shortcut(const std::string& target_path) noexcept
     {
         return Strings::format(R"###(
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
@@ -257,7 +257,7 @@ namespace vcpkg::Commands::Integrate
 
             const fs::path appdata_src_path = tmp_dir / "vcpkg.user.targets";
             fs.write_contents(appdata_src_path,
-            create_appdata_targets_shortcut(paths.buildsystems_msbuild_targets.u8string()));
+							  create_appdata_targets_shortcut(paths.buildsystems_msbuild_targets.u8string()));
             auto appdata_dst_path = get_appdata_targets_path();
 
             const auto rc = fs.copy_file(appdata_src_path, appdata_dst_path, fs::copy_options::overwrite_existing, ec);
@@ -275,14 +275,14 @@ namespace vcpkg::Commands::Integrate
 
             const fs::path appdata_src_path2 = tmp_dir / "vcpkg.user.props";
             fs.write_contents(appdata_src_path2,
-                              create_appdata_shortcut(paths.buildsystems_msbuild_props.string()));
+                              create_appdata_targets_shortcut(paths.buildsystems_msbuild_props.u8string()));
             auto appdata_dst_path2 = get_appdata_props_path();
 
             const auto rc2 = fs.copy_file(appdata_src_path2, appdata_dst_path2, fs::copy_options::overwrite_existing, ec);
 
             if (!rc2 || ec)
             {
-                System::println(System::Color::error,
+                System::print2(System::Color::error,
                                 "Error: Failed to copy file: %s -> %s",
                                 appdata_src_path2.string(),
                                 appdata_dst_path2.string());
