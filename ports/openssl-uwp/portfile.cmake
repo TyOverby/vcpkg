@@ -79,6 +79,26 @@ file(INSTALL
     ${SOURCE_PATH}/out32dll/ssleay32.lib
     DESTINATION ${CURRENT_PACKAGES_DIR}/debug/lib)
 
+#Rename required due to CMakes FindOpenSSL Module. It searches for names with an additional "d"
+if(EXISTS ${CURRENT_PACKAGES_DIR}/debug/libeay32.lib)
+    file(RENAME ${CURRENT_PACKAGES_DIR}/debug/libeay32.lib ${CURRENT_PACKAGES_DIR}/debug/libeay32d.lib)
+endif()
+if(EXISTS ${CURRENT_PACKAGES_DIR}/debug/eay32.lib)
+    file(RENAME ${CURRENT_PACKAGES_DIR}/debug/eay32.lib ${CURRENT_PACKAGES_DIR}/debug/eay32d.lib)
+endif()
+if(EXISTS ${CURRENT_PACKAGES_DIR}/debug/ssleay32.lib)
+    file(RENAME ${CURRENT_PACKAGES_DIR}/debug/ssleay32.lib ${CURRENT_PACKAGES_DIR}/debug/ssleay32d.lib)
+endif()
+if(EXISTS ${CURRENT_PACKAGES_DIR}/debug/ssl.lib)
+    file(RENAME ${CURRENT_PACKAGES_DIR}/debug/ssl.lib ${CURRENT_PACKAGES_DIR}/debug/ssld.lib)
+endif()
+if(EXISTS ${CURRENT_PACKAGES_DIR}/debug/crypto.lib)
+    file(RENAME ${CURRENT_PACKAGES_DIR}/debug/crypto.lib ${CURRENT_PACKAGES_DIR}/debug/cryptod.lib)
+endif()
+if(EXISTS ${CURRENT_PACKAGES_DIR}/debug/libcrypto.lib)
+    file(RENAME ${CURRENT_PACKAGES_DIR}/debug/libcrypto.lib ${CURRENT_PACKAGES_DIR}/debug/libcryptod.lib)
+endif()
+
 file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
 file(COPY ${CMAKE_CURRENT_LIST_DIR}/usage DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT})
 
