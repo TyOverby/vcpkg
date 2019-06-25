@@ -82,9 +82,6 @@ namespace vcpkg
 
     fs::path VcpkgPaths::package_dir(const PackageSpec& spec) const { return this->packages / spec.dir(); }
 
-    fs::path VcpkgPaths::port_dir(const PackageSpec& spec) const { return this->ports / spec.name(); }
-    fs::path VcpkgPaths::port_dir(const std::string& name) const { return this->ports / name; }
-
     fs::path VcpkgPaths::build_info_file_path(const PackageSpec& spec) const
     {
         return this->package_dir(spec) / "BUILD_INFO";
@@ -191,26 +188,6 @@ namespace vcpkg
                                !candidates.empty(),
                                "Could not find Visual Studio instance at %s.",
                                vs_root_path.generic_string());
-        }
-
-        if (prebuildinfo.cmake_system_name == "WindowsStore")
-        {
-            // For now, cmake does not support VS 2019 when using the MSBuild generator.
-            Util::erase_remove_if(candidates, [&](const Toolset* t) { return t->version == "v142"; });
-            Checks::check_exit(VCPKG_LINE_INFO,
-                               !candidates.empty(),
-                               "With the current CMake version, UWP binaries can only be built with toolset version "
-                               "v141 or below. Please install the v141 toolset in VS 2019.");
-        }
-
-        if (System::get_host_processor() == System::CPUArchitecture::X86)
-        {
-            // For now, cmake does not support VS 2019 when using the MSBuild generator.
-            Util::erase_remove_if(candidates, [&](const Toolset* t) { return t->version == "v142"; });
-            Checks::check_exit(VCPKG_LINE_INFO,
-                               !candidates.empty(),
-                               "With the current CMake version, 32-bit machines can build with toolset version "
-                               "v141 or below. Please install the v141 toolset in VS 2019.");
         }
 
         Checks::check_exit(VCPKG_LINE_INFO, !candidates.empty(), "No suitable Visual Studio instances were found");
