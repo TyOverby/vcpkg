@@ -113,7 +113,7 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
         variant=debug
     )
 endif()
-
+#string(REPLACE ".exe" "" ESCAPED_CMAKE_CXX_COMPILER "${CMAKE_CXX_COMPILER}")
 configure_file(${CMAKE_CURRENT_LIST_DIR}/user-config.jam ${CMAKE_CURRENT_BINARY_DIR}/user-config.jam @ONLY)
 
 set(NUMBER_OF_PROCESSORS 1)
