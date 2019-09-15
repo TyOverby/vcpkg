@@ -26,7 +26,7 @@ function(boost_modular_build)
         message(FATAL_ERROR "Could not find b2 in ${BOOST_BUILD_PATH}")
     endif()
 
-    if(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "WindowsStore")
+    if(VCPKG_TARGET_IS_UWP)
         list(APPEND _bm_OPTIONS windows-api=store)
     endif()
 
@@ -34,10 +34,10 @@ function(boost_modular_build)
 
     set(REQUIREMENTS ${_bm_REQUIREMENTS})
 
-    if(NOT VCPKG_CMAKE_SYSTEM_NAME OR VCPKG_CMAKE_SYSTEM_NAME STREQUAL "WindowsStore")
+    if(VCPKG_TARGET_IS_WINDOWS)
         set(BOOST_LIB_PREFIX)
-        set(BOOST_LIB_RELEASE_SUFFIX -vc140-mt.lib)
-        set(BOOST_LIB_DEBUG_SUFFIX -vc140-mt-gd.lib)
+        set(BOOST_LIB_RELEASE_SUFFIX -${VCPKG_PLATFORM_TOOLSET}-mt.lib)
+        set(BOOST_LIB_DEBUG_SUFFIX -${VCPKG_PLATFORM_TOOLSET}-mt-gd.lib)
     else()
         set(BOOST_LIB_PREFIX lib)
         if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
@@ -74,7 +74,7 @@ function(boost_modular_build)
     #     file(COPY "${CURRENT_INSTALLED_DIR}/share/boost-predef/check" DESTINATION "${_bm_SOURCE_PATH}/build/predef")
     # endif()
 
-    if(VCPKG_CMAKE_SYSTEM_NAME AND NOT VCPKG_CMAKE_SYSTEM_NAME STREQUAL "WindowsStore")
+    if(VCPKG_TARGET_IS_WINDOWS)
         if(DEFINED _bm_BOOST_CMAKE_FRAGMENT)
             set(fragment_option "-DBOOST_CMAKE_FRAGMENT=${_bm_BOOST_CMAKE_FRAGMENT}")
         endif()
@@ -85,8 +85,10 @@ function(boost_modular_build)
                 "-DB2_EXE=${B2_EXE}"
                 "-DSOURCE_PATH=${_bm_SOURCE_PATH}"
                 "-DBOOST_BUILD_PATH=${BOOST_BUILD_PATH}"
+                "-DVCPKG_PLATFORM_TOOLSET=${VCPKG_PLATFORM_TOOLSET}"
                 ${fragment_option}
         )
+        #message(STATUS "-DVCPKG_PLATFORM_TOOLSET=${VCPKG_PLATFORM_TOOLSET}")
         vcpkg_install_cmake()
 
         if(NOT EXISTS ${CURRENT_PACKAGES_DIR}/lib)
@@ -153,7 +155,7 @@ function(boost_modular_build)
         "-sBZIP2_INCLUDE=${CURRENT_INSTALLED_DIR}/include"
         threading=multi
     )
-    if(NOT VCPKG_CMAKE_SYSTEM_NAME OR VCPKG_CMAKE_SYSTEM_NAME STREQUAL "WindowsStore")
+    if(VCPKG_TARGET_IS_WINDOWS)
         list(APPEND _bm_OPTIONS threadapi=win32)
     else()
         list(APPEND _bm_OPTIONS threadapi=pthread)
@@ -258,13 +260,22 @@ function(boost_modular_build)
         set(TOOLSET_OPTIONS "${TOOLSET_OPTIONS} <compileflags>-D_WIN32_WINNT=0x0602")
     endif()
 
+    if(NOT VCPKG_C_COMPILER OR NOT VCPKG_CXX_COMPILER OR NOT VCPKG_LINKER)
+        vcpkg_determine_compiler_and_linker()
+    endif()
     configure_file(${_bm_DIR}/user-config.jam ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg/user-config.jam @ONLY)
     configure_file(${_bm_DIR}/user-config.jam ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel/user-config.jam @ONLY)
 
+
+    
     if(VCPKG_PLATFORM_TOOLSET MATCHES "v14.")
         list(APPEND _bm_OPTIONS toolset=msvc)
     elseif(VCPKG_PLATFORM_TOOLSET MATCHES "external")
         list(APPEND _bm_OPTIONS toolset=gcc)
+    elseif(VCPKG_PLATFORM_TOOLSET MATCHES "llvm")
+        list(APPEND _bm_OPTIONS toolset=clang-win)
+    elseif(VCPKG_PLATFORM_TOOLSET MATCHES "Intel")
+        list(APPEND _bm_OPTIONS toolset=intel)
     else()
         message(FATAL_ERROR "Unsupported value for VCPKG_PLATFORM_TOOLSET: '${VCPKG_PLATFORM_TOOLSET}'")
     endif()
