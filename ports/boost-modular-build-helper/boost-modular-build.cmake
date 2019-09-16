@@ -74,7 +74,7 @@ function(boost_modular_build)
     #     file(COPY "${CURRENT_INSTALLED_DIR}/share/boost-predef/check" DESTINATION "${_bm_SOURCE_PATH}/build/predef")
     # endif()
 
-    if(VCPKG_TARGET_IS_WINDOWS)
+    if(NOT VCPKG_TARGET_IS_WINDOWS)
         if(DEFINED _bm_BOOST_CMAKE_FRAGMENT)
             set(fragment_option "-DBOOST_CMAKE_FRAGMENT=${_bm_BOOST_CMAKE_FRAGMENT}")
         endif()
