@@ -20,12 +20,13 @@ function(vcpkg_determine_compiler_and_linker)
         STRING(REGEX MATCH "${VCPKG_CMAKE_VS_GENERATOR}" TEST4 ${COMPILER_INFO})
     endif()
     message(STATUS "Used CMAKE Generator: ${VCPKG_CMAKE_VS_GENERATOR}")
+    string(REPLACE ";" "\\\\\;" VCPKG_CMAKE_VS_GENERATOR_ESCAPED "${VCPKG_CMAKE_VS_GENERATOR}")
     if(NOT TEST1 OR NOT TEST2 OR NOT TEST3 OR NOT TEST4)
         vcpkg_execute_required_process(COMMAND  cmake -G ${VCPKG_CMAKE_VS_GENERATOR} -T ${VCPKG_PLATFORM_TOOLSET} -S ./ -B build/
-                                    -DVCPKG_CMAKE_VS_GENERATOR=${VCPKG_CMAKE_VS_GENERATOR}
-                                    -DVCPKG_PLATFORM_TOOLSET=${VCPKG_PLATFORM_TOOLSET}
-                                    -DVCPKG_VISUAL_STUDIO_PATH=${VCPKG_VISUAL_STUDIO_PATH}
-                                    -DTARGET_TRIPLET=${TARGET_TRIPLET}
+                                    "-DVCPKG_CMAKE_VS_GENERATOR=${VCPKG_CMAKE_VS_GENERATOR_ESCAPED}"
+                                    "-DVCPKG_PLATFORM_TOOLSET=${VCPKG_PLATFORM_TOOLSET}"
+                                    "-DVCPKG_VISUAL_STUDIO_PATH=${VCPKG_VISUAL_STUDIO_PATH}"
+                                    "-DTARGET_TRIPLET=${TARGET_TRIPLET}"
                                     WORKING_DIRECTORY ${DUMMY_DIR}
                                     LOGNAME compiler_discovery.log) 
         FILE(READ ${COMPILER_INFO_FILE} COMPILER_INFO)
