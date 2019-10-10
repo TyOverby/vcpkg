@@ -33,6 +33,9 @@ vcpkg_download_distfile(ARCHIVE
     FILENAME "postgresql-12.0.tar.bz2"
     SHA512 231a0b5c181c33cb01c3f39de1802319b79eceec6997935ab8605dea1f4583a52d0d16e5a70fcdeea313462f062503361d543433ee03d858ba332c72a665f696
 )
+set(PATCHES_DEBUG  
+        patches/windows/debug_name.patch
+    )
 
 set(PATCHES  
         patches/windows/install.patch
@@ -110,6 +113,7 @@ if(VCPKG_TARGET_IS_WINDOWS)
         vcpkg_apply_patches(
             SOURCE_PATH "${BUILDPATH_${_buildtype}}"
             PATCHES patches/windows/Solution_${_buildtype}.patch
+                    ${PATCHES_${_buildtype}}
         )
         message(STATUS "Patches applied!")
         file(COPY "${CURRENT_PORT_DIR}/config.pl" DESTINATION "${BUILDPATH_${_buildtype}}/src/tools/msvc")

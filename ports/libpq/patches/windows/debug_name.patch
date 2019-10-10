@@ -1,0 +1,23 @@
+diff --git a/src/tools/msvc/MSBuildProject.pm b/src/tools/msvc/MSBuildProject.pm
+index 823357c02..625f32bf8 100644
+--- a/src/tools/msvc/MSBuildProject.pm	
++++ b/src/tools/msvc/MSBuildProject.pm
+@@ -355,5 +355,6 @@ sub WriteItemDefinitionGroup
+       <SubSystem>Console</SubSystem>
+       <TargetMachine>$targetmachine</TargetMachine>
++      <ImportLibrary>\$(OutDir)\$(TargetName)d.lib</ImportLibrary>
+ EOF
+ 	if ($self->{disablelinkerwarnings})
+ 	{
+diff --git a/src/tools/msvc/Project.pm b/src/tools/msvc/Project.pm
+index 0d3554659..18409e4d3 100644
+--- a/src/tools/msvc/Project.pm
++++ b/src/tools/msvc/Project.pm
+@@ -399,6 +399,7 @@ sub GetAdditionalLinkerDependencies
+                                $xlib =~ s/\.lib$/$libcfg.lib/;
+                                last;
+                        }
+                }
++               $xlib =~ s/\[^d].lib$/d.lib/;
+                $libs .= $xlib . $separator;
+        }
