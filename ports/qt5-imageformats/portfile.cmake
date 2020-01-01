@@ -11,6 +11,10 @@ list(APPEND CORE_OPTIONS
     
 find_library(TIFF_RELEASE NAMES tiff PATHS "${CURRENT_INSTALLED_DIR}/lib" NO_DEFAULT_PATH) # Depends on lzma
 find_library(TIFF_DEBUG NAMES tiffd PATHS "${CURRENT_INSTALLED_DIR}/debug/lib" NO_DEFAULT_PATH)
+find_library(JPEG_RELEASE NAMES jpeg jpeg-static PATHS "${CURRENT_INSTALLED_DIR}/lib" NO_DEFAULT_PATH)
+find_library(JPEG_DEBUG NAMES jpeg jpeg-static jpegd jpeg-staticd PATHS "${CURRENT_INSTALLED_DIR}/debug/lib" NO_DEFAULT_PATH)
+find_library(ZLIB_RELEASE NAMES z zlib PATHS "${CURRENT_INSTALLED_DIR}/lib" NO_DEFAULT_PATH)
+find_library(ZLIB_DEBUG NAMES z zlib zd zlibd PATHS "${CURRENT_INSTALLED_DIR}/debug/lib" NO_DEFAULT_PATH)
 
 find_library(JASPER_RELEASE NAMES jasper PATHS "${CURRENT_INSTALLED_DIR}/lib" NO_DEFAULT_PATH)
 find_library(JASPER_DEBUG NAMES jasperd jasper libjasperd libjasper PATHS "${CURRENT_INSTALLED_DIR}/debug/lib" NO_DEFAULT_PATH)
@@ -30,10 +34,10 @@ find_library(WEBPMUX_DEBUG NAMES webpmuxd webpmux libwebpmuxd libwebpmux PATHS "
 find_library(LZMA_RELEASE lzma PATHS "${CURRENT_INSTALLED_DIR}/lib" NO_DEFAULT_PATH)
 find_library(LZMA_DEBUG lzmad lzma PATHS "${CURRENT_INSTALLED_DIR}/debug/lib" NO_DEFAULT_PATH)
 
-set(OPT_REL "TIFF_LIBS=${TIFF_RELEASE} ${LZMA_RELEASE}"
+set(OPT_REL "TIFF_LIBS=${TIFF_RELEASE} ${LZMA_RELEASE} ${JPEG_RELEASE} ${ZLIB_RELEASE}"
             "WEBP_LIBS=${WEBP_RELEASE} ${WEBPDEMUX_RELEASE} ${WEBPMUX_RELEASE}" 
             "JASPER_LIBS=${JASPER_RELEASE} ${FREEGLUT_RELEASE}") # This will still fail if LIBWEBP is installed with all available features due to the missing additional dependencies
-set(OPT_DBG "TIFF_LIBS=${TIFF_DEBUG} ${LZMA_DEBUG}"
+set(OPT_DBG "TIFF_LIBS=${TIFF_DEBUG} ${LZMA_DEBUG} ${JPEG_DEBUG} ${ZLIB_DEBUG}"
             "WEBP_LIBS=${WEBP_DEBUG} ${WEBPDEMUX_DEBUG} ${WEBPMUX_DEBUG}"
             "JASPER_LIBS=${JASPER_DEBUG} ${FREEGLUT_DEBUG}")
 list(APPEND CORE_OPTIONS "WEBP_INCDIR=${CURRENT_INSTALLED_DIR}/include") # Requires libwebp[all]
