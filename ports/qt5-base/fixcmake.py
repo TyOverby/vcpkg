@@ -12,7 +12,7 @@ tooldir="/tools/"+port+"/bin/"
 
 for f in files:
     openedfile = open(f, "r")
-    builder = ""
+    builder = "message(STATUS \"QtVisited:${CMAKE_CURRENT_LIST_FILE}\")\n"
     dllpatterndebug = re.compile("_install_prefix}/bin/Qt5.*d+(.dll|.so)")
     libpatterndebug = re.compile("_install_prefix}/lib/Qt5.*d+(.lib|.a)")
     exepattern = re.compile("_install_prefix}/bin/[a-z]+(.exe|)")
@@ -20,6 +20,12 @@ for f in files:
     tooldllpattern = re.compile("_install_prefix}/tools/qt5/bin/Qt5.*d+(.dll|.so)")
     populatepluginpattern = re.compile("_populate_[^_]+_plugin_properties\([^ ]+ RELEASE")
     populatetargetpattern = re.compile("_populate_[^_]+_target_properties\(RELEASE ")
+    #processprlpattern_one = re.compile("\\${_qt5AccessibilitySupport_install_prefix}/lib/Qt5AccessibilitySupport.prl" RELEASE")
+    processprlpattern = re.compile("_qt5_[^_]+_process_prl_file\(")
+    processprllibpath = re.compile("set\(_qt5_install_libs")
+    processprllibpath_two = re.compile("find_library\(_Qt5[^_]+_\${Configuration}_\${_lib}_PATH \${_lib} HINTS \${_search_paths} NO_DEFAULT_PATH\)")
+    processprllibpath_three = re.compile("find_library\(_Qt5[^_]+_\${Configuration}_\${_lib}_PATH \${_lib}\)")
+    debug_one = re.compile("set\(_lib_is_default_linked TRUE\)")
     for line in openedfile:
         if "_install_prefix}/tools/qt5/${LIB_LOCATION}" in line:
             builder += "    if (${Configuration} STREQUAL \"RELEASE\")"
@@ -81,6 +87,48 @@ for f in files:
             builder += line.replace("/bin/", tooldir)
         elif toolexepattern.search(line) != None:
             builder += line.replace("/tools/qt5/bin/",tooldir)
+        elif processprlpattern.search(line) != None:
+            debugprl = ""
+            builder += line
+            debugprl = line
+            line = next(openedfile)
+            builder += line
+            debugprl += line.replace("/lib/", "/debug/lib/").replace("/plugins/", "/debug/plugins/").replace(".prl", "d.prl").replace("RELEASE", "DEBUG")
+            line = next(openedfile)
+            builder += line
+            debugprl += line.replace("RELEASE", "DEBUG")
+            line = next(openedfile)
+            builder += line
+            debugprl += line.replace("RELEASE", "DEBUG")
+            line = next(openedfile)
+            builder += line
+            debugprl += line
+            builder += debugprl
+        elif processprllibpath.search(line) != None:
+            builder += "    if (${Configuration} STREQUAL \"RELEASE\")\n    "
+            builder += line
+            builder += "    else()\n    "
+            builder += line.replace("/lib/", "/debug/lib/")
+            builder += "    endif()\n"
+        elif processprllibpath_two.search(line) != None:
+            builder += line.replace("HINTS" ,"PATHS").replace("_search_paths", "_qt5_install_libs")
+            builder += line
+        elif processprllibpath_three.search(line) != None:
+            #builder += "                     message(STATUS \"" 
+            #builder += line
+            #builder += "                     \")\n"
+            builder += line.replace(" ${_lib}", " ${_lib} PATHS ${_qt5_install_libs} NO_DEFAULT_PATH")
+            builder += line
+            builder += "                    message(STATUS \""
+            cmakevar = line.replace("                    find_library(", "").replace(" ${_lib})\n", "")
+            builder += "FOUND "
+            builder += cmakevar
+            builder += " at: ${"
+            builder += cmakevar
+            builder += "}\")\n"
+        elif debug_one.search(line) != None:
+            builder += line
+            builder += "                        message(STATUS \"${_lib} DEFAULT_LINKED:${_standard_library} (${prl_file_location})\")\n"
         else:
             builder += line
     new_file = open(f, "w")
