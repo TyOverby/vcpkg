@@ -1,6 +1,8 @@
-include(vcpkg_common_functions)
-
 vcpkg_check_linkage(ONLY_DYNAMIC_LIBRARY)
+
+if (VCPKG_TARGET_IS_LINUX)
+    message(WARNING "Building with a gcc version less than 6.1 is not supported.")
+endif()
 
 if (VCPKG_TARGET_ARCHITECTURE STREQUAL "x86")
     set(ANGLE_CPU_BITNESS ANGLE_IS_32_BIT_CPU)
@@ -15,10 +17,11 @@ endif()
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO google/angle
-    REF chromium/3672
-    SHA512 dd6a05f0f1f4544b8646c41ffcb4d5e3b41f5261771ada47889345a24d4e55e6370df55a26c354a7073efcde307644cec6c6064ea6fe498ed6b52c3017249f81
+    REF 8f08fed925c54835c4faee4d7dd61d6ed2964ffd
+    SHA512 037ebe356371924088563180c4a37a31eaffa41ca21c42554391672c28e62fabc19d787516b88baa192b771e05c370c5a6cfec0863b70e08d65216f41d89923f
     PATCHES 
         001-fix-uwp.patch
+        002-fix-builder-error.patch
 )
 
 file(COPY ${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt DESTINATION ${SOURCE_PATH})
@@ -38,4 +41,4 @@ vcpkg_fixup_cmake_targets(CONFIG_PATH share/unofficial-angle TARGET_PATH share/u
 
 vcpkg_copy_pdbs()
 
-file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/angle RENAME copyright)
+file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
