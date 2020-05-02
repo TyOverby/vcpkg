@@ -96,7 +96,22 @@ function(configure_qt)
                 -L ${CURRENT_INSTALLED_DIR}${_path_suffix_${_buildname}}/lib/manual-link
                 -xplatform ${_csc_TARGET_PLATFORM}
             )
-        
+        macro(setup_compile_flags lang langqt)
+            if(VCPKG_${lang}_FLAGS)
+                list(APPEND BUILD_OPTIONS "QMAKE_${langqt}FLAGS+=${VCPKG_${lang}_FLAGS}")
+            endif()
+            if(VCPKG_${lang}_FLAGS_DEBUG)
+                list(APPEND BUILD_OPTIONS "QMAKE_${langqt}FLAGS_DEBUG+=${VCPKG_${lang}_FLAGS_DEBUG}")
+            endif()
+            if(VCPKG_${lang}_FLAGS_RELEASE)
+                list(APPEND BUILD_OPTIONS "QMAKE_${langqt}FLAGS_RELEASE+=${VCPKG_${lang}_FLAGS_RELEASE};QMAKE_${langqt}FLAGS_RELEASE_WITH_DEBUGINFO+=${VCPKG_${lang}_FLAGS_RELEASE}")
+            endif()
+        endmacro()
+        setup_compile_flags(C C)
+        setup_compile_flags(CXX CXX)
+        setup_compile_flags(LINKER L)
+        message(STATUS "${INVOKE_OPTIONS}")
+        message(STATUS "${BUILD_OPTIONS}")
         if(DEFINED _csc_HOST_TOOLS_ROOT) #use qmake          
             if(WIN32)
                 set(INVOKE_OPTIONS "QMAKE_CXX.QMAKE_MSC_VER=1911" "QMAKE_MSC_VER=1911")
