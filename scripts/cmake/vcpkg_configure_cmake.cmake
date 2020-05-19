@@ -60,7 +60,7 @@
 ## * [opencv](https://github.com/Microsoft/vcpkg/blob/master/ports/opencv/portfile.cmake)
 function(vcpkg_configure_cmake)
     cmake_parse_arguments(_csc
-        "PREFER_NINJA;DISABLE_PARALLEL_CONFIGURE;NO_CHARSET_FLAG"
+        "PREFER_NINJA;DISABLE_PARALLEL_CONFIGURE;NO_CHARSET_FLAG;ENABLE_FORTRAN"
         "SOURCE_PATH;GENERATOR"
         "OPTIONS;OPTIONS_DEBUG;OPTIONS_RELEASE"
         ${ARGN}
@@ -150,6 +150,9 @@ function(vcpkg_configure_cmake)
     # If we use Ninja, make sure it's on PATH
     if(GENERATOR STREQUAL "Ninja")
         vcpkg_find_acquire_program(NINJA)
+        if(NOT NINJA)
+            message(FATAL_ERROR "Unable to locate ninja!")
+        endif()
         get_filename_component(NINJA_PATH ${NINJA} DIRECTORY)
         vcpkg_add_to_path("${NINJA_PATH}")
         list(APPEND _csc_OPTIONS "-DCMAKE_MAKE_PROGRAM=${NINJA}")
@@ -196,6 +199,15 @@ function(vcpkg_configure_cmake)
     if(NOT VCPKG_CHAINLOAD_TOOLCHAIN_FILE)
         if(NOT DEFINED VCPKG_CMAKE_SYSTEM_NAME OR _TARGETTING_UWP)
             set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "${SCRIPTS}/toolchains/windows.cmake")
+            if(_csc_ENABLE_FORTRAN)
+                vcpkg_acquire_msys(MSYS_ROOT PACKAGES "mingw-w64-x86_64-gcc-fortran") # TODO: make x86 work
+                vcpkg_add_to_path("${MSYS_ROOT}/mingw64/bin/")
+                list(APPEND _csc_OPTIONS "-DCMAKE_USER_MAKE_RULES_OVERRIDE_Fortran=${SCRIPTS}/toolchains/windows_fortran_rules.cmake"
+                                         "-DCMAKE_RC_COMPILER_INIT=rc"
+                                         "-DCMAKE_RC_COMPILER=rc"
+                                         "-DCMAKE_C_COMPILER=cl"
+                                         "-DCMAKE_LINKER=link")
+            endif()
         elseif(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "Linux")
             set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "${SCRIPTS}/toolchains/linux.cmake")
         elseif(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "Android")
