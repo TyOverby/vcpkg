@@ -64,7 +64,7 @@ if(VCPKG_TARGET_IS_WINDOWS)
     list(APPEND ADDITIONAL_TOOLS gspawn-win64-helper-console gspawn-win64-helper)
 endif()
 vcpkg_copy_tools(TOOL_NAMES gdbus gio-querymodules gio glib-compile-resources glib-compile-schemas gobject-query gresource gsettings ${ADDITIONAL_TOOLS} AUTO_CLEAN)
-vcpkg_fixup_pkgconfig() # Probably need to fix executable paths
+vcpkg_fixup_pkgconfig(SKIP_CHECK) # Probably need to fix executable paths
 
 file(INSTALL ${CURRENT_PACKAGES_DIR}/lib/glib-2.0/include/glibconfig.h DESTINATION ${CURRENT_PACKAGES_DIR}/include/glib-2.0)
 

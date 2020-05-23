@@ -91,7 +91,7 @@ function(vcpkg_fixup_pkgconfig_check_libraries _config _contents_var _system_lib
         if("${_lib}" MATCHES "^-L((\\ |[^ ]+)+)$")
             debug_message("Search path for libraries (unused): ${CMAKE_MATCH_1}") # not used yet we assume everything can be found in libprefix
             continue()
-        elseif("${_lib}" MATCHES [[^-l("[^"]+"|(\\ |[^ ]+)+)$]] )
+        elseif("${_lib}" MATCHES [[^-l("[^"]+"|(\\ |[^ ]+)+)$]])
             set(_libname ${CMAKE_MATCH_1})
             debug_message("Searching for library: ${_libname}")
             #debug_message("System libraries: ${_system_libs}")
@@ -192,7 +192,7 @@ function(vcpkg_fixup_pkgconfig_check_libraries _config _contents_var _system_lib
 endfunction()
 
 function(vcpkg_fixup_pkgconfig)
-    cmake_parse_arguments(_vfpkg "" "" "RELEASE_FILES;DEBUG_FILES;SYSTEM_LIBRARIES;SYSTEM_PACKAGES;IGNORE_FLAGS" ${ARGN})
+    cmake_parse_arguments(_vfpkg "SKIP_CHECK" "" "RELEASE_FILES;DEBUG_FILES;SYSTEM_LIBRARIES;SYSTEM_PACKAGES;IGNORE_FLAGS" ${ARGN})
     
     if(VCPKG_TARGET_IS_LINUX)
         list(APPEND _vfpkg_SYSTEM_LIBRARIES -ldl -lm)
@@ -231,7 +231,9 @@ function(vcpkg_fixup_pkgconfig)
         string(REPLACE "${_VCPKG_INSTALLED_DIR}" "\${prefix}" _contents "${_contents}")
 
         string(REGEX REPLACE "^prefix=(\\\\)?\\\${prefix}" "prefix=\${pcfiledir}/${RELATIVE_PC_PATH}" _contents "${_contents}") # make pc file relocatable
-        vcpkg_fixup_pkgconfig_check_libraries("RELEASE" _contents "${_vfpkg_SYSTEM_LIBRARIES}" "${_vfpkg_SYSTEM_PACKAGES}" "${_vfpkg_IGNORE_FLAGS}")
+        if(NOT _vfpkg_SKIP_CHECK)
+            vcpkg_fixup_pkgconfig_check_libraries("RELEASE" _contents "${_vfpkg_SYSTEM_LIBRARIES}" "${_vfpkg_SYSTEM_PACKAGES}" "${_vfpkg_IGNORE_FLAGS}")
+        endif()
         file(WRITE "${_file}" "${_contents}")
         unset(PKG_LIB_SEARCH_PATH)
     endforeach()
@@ -258,7 +260,9 @@ function(vcpkg_fixup_pkgconfig)
 
         string(REGEX REPLACE "^prefix=(\\\\)?\\\${prefix}(/debug)?" "prefix=\${pcfiledir}/${RELATIVE_PC_PATH}" _contents "${_contents}") # make pc file relocatable
         string(REPLACE "\${prefix}/debug" "\${prefix}" _contents "${_contents}") # replace remaining debug paths if they exist. 
-        vcpkg_fixup_pkgconfig_check_libraries("DEBUG" _contents "${_vfpkg_SYSTEM_LIBRARIES}" "${_vfpkg_SYSTEM_PACKAGES}" "${_vfpkg_IGNORE_FLAGS}")
+        if(NOT _vfpkg_SKIP_CHECK)
+            vcpkg_fixup_pkgconfig_check_libraries("DEBUG" _contents "${_vfpkg_SYSTEM_LIBRARIES}" "${_vfpkg_SYSTEM_PACKAGES}" "${_vfpkg_IGNORE_FLAGS}")
+        endif()
         file(WRITE "${_file}" "${_contents}")
         unset(PKG_LIB_SEARCH_PATH)
     endforeach()
