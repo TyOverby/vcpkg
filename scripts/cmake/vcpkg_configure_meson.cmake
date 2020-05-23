@@ -79,8 +79,12 @@ function(vcpkg_configure_meson)
     else()
         list(APPEND _vcm_OPTIONS "-Dcmake_prefix_path=['${CURRENT_INSTALLED_DIR}']")
     endif()
+
     list(APPEND _vcm_OPTIONS --buildtype plain --backend ninja --wrap-mode nodownload)
-    
+    if(VCPKG_TARGET_IS_WINDOWS AND VCPKG_TARGET_ARCHITECTURE MATCHES "arm")
+        message(STATUS "Crossfile for meson build required!")
+        list(APPEND _vcm_OPTIONS --cross-file "${SCRIPTS}/toolchains/meson.windows.arm64.crossfile")
+    endif()
     if(VCPKG_LIBRARY_LINKAGE STREQUAL "dynamic")
         list(APPEND _vcm_OPTIONS --default-library shared)
     else()

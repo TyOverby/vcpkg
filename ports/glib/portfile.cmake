@@ -40,7 +40,7 @@ vcpkg_configure_meson(
     SOURCE_PATH ${SOURCE_PATH}
     OPTIONS
         --backend=ninja
-        --cross-file=${CMAKE_CURRENT_LIST_DIR}/meson.cross
+        #--cross-file=${CMAKE_CURRENT_LIST_DIR}/meson.cross
         -Dbuild_tests=false
         -Dlibintlinc=${CURRENT_INSTALLED_DIR}/include
         -Dpythonexe=${PYTHON3}
