@@ -1,0 +1,16 @@
+diff --git a/glib/gnulib/gl_cv_func_printf_infinite_long_double/meson.build b/glib/gnulib/gl_cv_func_printf_infinite_long_double/meson.build
+index b7a714c81..786ec7da7 100644
+--- a/glib/gnulib/gl_cv_func_printf_infinite_long_double/meson.build	
++++ b/glib/gnulib/gl_cv_func_printf_infinite_long_double/meson.build
+@@ -196,9 +198,9 @@ if gl_cv_func_printf_long_double
+       elif host_system == 'windows'
+         # Guess yes on MSVC, no on mingw.
+         if cc.get_id() == 'msvc' or cc.get_id() == 'clang-cl'
+-          gl_cv_func_printf_infinite = 'true'
++          gl_cv_func_printf_infinite_long_double = 'true'
+         else
+-          gl_cv_func_printf_infinite = 'false'
++          gl_cv_func_printf_infinite_long_double = 'false'
+         endif
+       else
+         gl_cv_func_printf_infinite_long_double = 'false'

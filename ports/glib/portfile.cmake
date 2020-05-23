@@ -23,6 +23,7 @@ vcpkg_extract_source_archive_ex(
         fix-meson.patch
         use-libiconv-on-windows.patch
         fix-arm-builds.patch
+        build.patch
 )
 
 file(REMOVE ${SOURCE_PATH}/glib/win_iconv.c)
@@ -35,12 +36,10 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     selinux HAVE_SELINUX
 )
 
-
 vcpkg_configure_meson(
     SOURCE_PATH ${SOURCE_PATH}
     OPTIONS
         --backend=ninja
-        #--cross-file=${CMAKE_CURRENT_LIST_DIR}/meson.cross
         -Dbuild_tests=false
         -Dlibintlinc=${CURRENT_INSTALLED_DIR}/include
         -Dpythonexe=${PYTHON3}
@@ -61,11 +60,15 @@ endif()
 
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/share)
-file(GLOB EXE ${CURRENT_PACKAGES_DIR}/bin/*.exe)
-file(GLOB DEBUG_EXE ${CURRENT_PACKAGES_DIR}/debug/bin/*.exe)
-if(EXE OR DEBUG_EXE)
-    file(REMOVE ${EXE} ${DEBUG_EXE})
+if(VCPKG_TARGET_IS_WINDOWS)
+    list(APPEND ADDITIONAL_TOOLS gspawn-win64-helper-console gspawn-win64-helper)
 endif()
+vcpkg_copy_tools(TOOL_NAMES gdbus gio-querymodules gio glib-compile-resources glib-compile-schemas gobject-query gresource gsettings ${ADDITIONAL_TOOLS} AUTO_CLEAN)
+#file(GLOB EXE ${CURRENT_PACKAGES_DIR}/bin/*.exe)
+#file(GLOB DEBUG_EXE ${CURRENT_PACKAGES_DIR}/debug/bin/*.exe)
+#if(EXE OR DEBUG_EXE)
+#    file(REMOVE ${EXE} ${DEBUG_EXE})
+#endif()
 
 file(INSTALL ${CURRENT_PACKAGES_DIR}/lib/glib-2.0/include/glibconfig.h DESTINATION ${CURRENT_PACKAGES_DIR}/include/glib-2.0)
 

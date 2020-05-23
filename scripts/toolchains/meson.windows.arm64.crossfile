@@ -1,9 +1,11 @@
 [binaries]
 #exe_wrapper = 'None' # A command used to run generated executables.
+cc = 'msvc'
 c = 'cl'
 cpp = 'cl'
 ar = 'lib'
 windres = 'rc'
+cmake = 'cmake'
 [properties]
 #needs_exe_wrapper = true
 skip_sanity_check = True
