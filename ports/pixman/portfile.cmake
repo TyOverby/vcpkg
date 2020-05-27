@@ -7,9 +7,6 @@ if(VCPKG_TARGET_IS_WINDOWS)
     endif()
 endif()
 
-#if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
-    #list(APPEND PATCHES static.patch)
-#endif()
 if(VCPKG_TARGET_ARCHITECTURE STREQUAL "x86")
     list(INSERT VCPKG_CXX_FLAGS 0 /arch:SSE2)
     list(INSERT VCPKG_C_FLAGS 0 /arch:SSE2)
@@ -38,8 +35,7 @@ vcpkg_extract_source_archive_ex(
     OUT_SOURCE_PATH SOURCE_PATH
     ARCHIVE ${ARCHIVE}
     REF ${PIXMAN_VERSION}
-    PATCHES #meson.build.patch
-            #${PATCHES}
+    PATCHES #${PATCHES}
 )
 # Meson install wrongly pkgconfig file!
 vcpkg_configure_meson(
@@ -49,6 +45,16 @@ vcpkg_configure_meson(
 )
 vcpkg_install_meson()
 vcpkg_fixup_pkgconfig()
+
+if(VCPKG_TARGET_IS_WINDOWS AND VCPKG_LIBRARY_LINKAGE STREQUAL static)
+    set(_file pixman-1) # Rename library due to meson defaults
+    if(EXISTS "${CURRENT_PACKAGES_DIR}/debug/lib${_file}.a" )
+        file(RENAME "${CURRENT_PACKAGES_DIR}/debug/lib${_file}.a" "${CURRENT_PACKAGES_DIR}/debug/lib/${_file}.lib")
+    endif()
+    if(EXISTS "${CURRENT_PACKAGES_DIR}/lib${_file}.a" )
+        file(RENAME "${CURRENT_PACKAGES_DIR}/lib${_file}.a" "${CURRENT_PACKAGES_DIR}/lib/${_file}.lib")
+    endif()
+endif()
 
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
