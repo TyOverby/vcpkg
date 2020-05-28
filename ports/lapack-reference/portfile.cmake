@@ -7,7 +7,11 @@
 
 SET(VCPKG_POLICY_EMPTY_INCLUDE_FOLDER enabled)
 
-vcpkg_check_linkage(ONLY_STATIC_LIBRARY)
+if(CMAKE_HOST_WIN32 AND NOT VCPKG_USE_EXTERNAL_Fortran)
+    # Since we use MinGW Fortran here and would require ld otherwise for all dependent ports
+    vcpkg_check_linkage(ONLY_DYNAMIC_LIBRARY)
+    #set(VCPKG_CRT_LINKAGE dynamic)
+endif()
 
 set(lapack_ver 3.8.0)
 
@@ -31,7 +35,7 @@ endif()
 
 vcpkg_configure_cmake(
         PREFER_NINJA
-        ENABLE_FORTRAN
+        ENABLE_Fortran
         SOURCE_PATH ${SOURCE_PATH}
         OPTIONS
             "-DUSE_OPTIMIZED_BLAS=${USE_OPTIMIZED_BLAS}"
@@ -48,3 +52,6 @@ file(INSTALL "${SOURCE_PATH}/LICENSE" DESTINATION "${CURRENT_PACKAGES_DIR}/share
 
 # remove debug includs
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
+
+SET(VCPKG_POLICY_DLLS_WITHOUT_LIBS enabled)
+set(VCPKG_POLICY_SKIP_DUMPBIN_CHECKS enabled)
