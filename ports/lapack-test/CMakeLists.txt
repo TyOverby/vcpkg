@@ -18,7 +18,7 @@ set(CMAKE_C_STANDARD_LIBRARIES "${CMAKE_C_STANDARD_LIBRARIES} ${GCC_LIBS_BASE}li
 set(CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_CXX_STANDARD_LIBRARIES} ${GCC_LIBS_BASE}libgfortran.dll.a ${GCC_LIBS_BASE}libquadmath.dll.a" CACHE INTERNAL "" FORCE)
 find_package(BLAS)
 
-find_package(LAPACK)
+find_package(LAPACK REQUIRED)
 #
 add_executable(${PROJECT_NAME} main.cpp)
 target_include_directories(${PROJECT_NAME} PRIVATE "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include")
@@ -32,4 +32,4 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
 #target_link_libraries(${PROJECT_NAME} PRIVATE "-lm")
 #target_link_libraries(${PROJECT_NAME} PRIVATE arithchk)
 
-install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+install(TARGETS ${PROJECT_NAME} DESTINATION tools/lapack_test)
