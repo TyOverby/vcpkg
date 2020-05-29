@@ -53,5 +53,14 @@ file(INSTALL "${SOURCE_PATH}/LICENSE" DESTINATION "${CURRENT_PACKAGES_DIR}/share
 # remove debug includs
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 
-SET(VCPKG_POLICY_DLLS_WITHOUT_LIBS enabled)
+if(VCPKG_TARGET_IS_WINDOWS)
+    if(EXISTS "${CURRENT_PACKAGES_DIR}/lib/liblapack.lib")
+        file(RENAME "${CURRENT_PACKAGES_DIR}/lib/liblapack.lib" "${CURRENT_PACKAGES_DIR}/lib/lapack.lib")
+    endif()
+    if(EXISTS "${CURRENT_PACKAGES_DIR}/debug/lib/liblapack.lib")
+        file(RENAME "${CURRENT_PACKAGES_DIR}/debug/lib/liblapack.lib" "${CURRENT_PACKAGES_DIR}/debug/lib/lapack.lib")
+    endif()
+endif()
+
+#SET(VCPKG_POLICY_DLLS_WITHOUT_LIBS enabled)
 set(VCPKG_POLICY_SKIP_DUMPBIN_CHECKS enabled)
