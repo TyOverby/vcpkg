@@ -95,6 +95,7 @@ function(vcpkg_configure_cmake)
         set(NINJA_CAN_BE_USED OFF)
     endif()
 
+
     if(_csc_GENERATOR)
         set(GENERATOR ${_csc_GENERATOR})
     elseif(_csc_PREFER_NINJA AND NINJA_CAN_BE_USED)
@@ -199,48 +200,19 @@ function(vcpkg_configure_cmake)
     if(NOT VCPKG_CHAINLOAD_TOOLCHAIN_FILE)
         if(NOT DEFINED VCPKG_CMAKE_SYSTEM_NAME OR _TARGETTING_UWP)
             if(_csc_ENABLE_Fortran AND CMAKE_HOST_WIN32 AND NOT VCPKG_USE_EXTERNAL_Fortran)
-                vcpkg_acquire_msys(MSYS_ROOT PACKAGES "mingw-w64-x86_64-gcc-fortran") # TODO: make x86 work
-                set(MINGW_BIN "${MSYS_ROOT}/mingw64/bin/")
+                vcpkg_acquire_msys(MSYS_ROOT)
+                if(VCPKG_TARGET_ARCHITECTURE STREQUAL "x86")
+                    set(MINGW_PATH mingw32)
+                elseif(VCPKG_TARGET_ARCHITECTURE STREQUAL "x64")
+                    set(MINGW_PATH mingw64)
+                else()
+                    message(FATAL_ERROR "Unknown architecture '${VCPKG_TARGET_ARCHITECTURE}' for MinGW Fortran build!")
+                endif()
+                set(MINGW_BIN "${MSYS_ROOT}/${MINGW_PATH}/bin/")
                 vcpkg_add_to_path("${MINGW_BIN}")
-                # set(GCC_LIBS_BASE "${MSYS_ROOT}/mingw64/lib/gcc/x86_64-w64-mingw32/10.1.0/")
-                # set(MINGW_LIBS_BASE "${MSYS_ROOT}/mingw64/x86_64-w64-mingw32/lib/")
-                # file(TO_CMAKE_PATH "$ENV{VCToolsInstallDir}" VCToolsInstallDir)
-                # ##### VVVVV does not work requires also __image_base__
-                # ### would probably work with a windows nativ libgfortran?
-                # set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "${SCRIPTS}/toolchains/windows.cmake")
-                # #-lgfortran.dll -lquadmath.dll -lgcc -lwinpthread.dll
-                # list(APPEND _csc_OPTIONS "-DCMAKE_USER_MAKE_RULES_OVERRIDE_Fortran=${SCRIPTS}/toolchains/windows_fortran_rules.cmake"
-                                         # "-DCMAKE_RC_COMPILER_INIT=rc"
-                                         # "-DCMAKE_RC_COMPILER=rc"
-                                         # "-DCMAKE_C_COMPILER=cl"
-                                         # #"-DCMAKE_GNUtoMS_VCVARS"
-                                         # "-DGNUtoMS=ON"
-                                         # "-DCMAKE_LINKER=link"
-                                         # -DCMAKE_Fortran_COMPILER="${MINGW_BIN}/gfortran.exe"
-                                         # "-DCMAKE_Fortran_STANDARD_LIBRARIES_INIT=${GCC_LIBS_BASE}libgfortran.dll.a ${GCC_LIBS_BASE}libquadmath.dll.a ${GCC_LIBS_BASE}libgcc.a ${GCC_LIBS_BASE}libgcc_s.a ${GCC_LIBS_BASE}libgcc_eh.a ${MINGW_LIBS_BASE}libwinpthread.dll.a ${MINGW_LIBS_BASE}libmingwex.a ${MINGW_LIBS_BASE}libmingw32.a ${MINGW_LIBS_BASE}libm.a ${MINGW_LIBS_BASE}libmsvcrt.a ${MINGW_LIBS_BASE}libmsvcrt-os.a libcmt.lib")# $ENV{VCToolsInstallDir}/lib/x64/vccorlib.lib $ENV{VCToolsInstallDir}/lib/x64/msvcrt.lib") 
-                # #unresolved external symbol _DllMainCRTStartup last once
-                # if(NOT EXISTS "${CURRENT_INSTALLED_DIR}/bin/libgfortran-5.dll") # this needs to be its own port. 
-                    # set(MINGW_Fortran_DLLS "${MINGW_BIN}/libgfortran-5.dll"
-                                           # "${MINGW_BIN}/libquadmath-0.dll"
-                                           # "${MINGW_BIN}/libwinpthread-1.dll"
-                                           # "${MINGW_BIN}/libgcc_s_seh-1.dll")
-                    # file(INSTALL ${MINGW_Fortran_DLLS} DESTINATION "${CURRENT_PACKAGES_DIR}/bin")
-                    # file(INSTALL ${MINGW_Fortran_DLLS} DESTINATION "${CURRENT_PACKAGES_DIR}/debug/bin")
-                    # set(VCPKG_POLICY_SKIP_DUMPBIN_CHECKS enabled)
-                # endif()
-                ## VVVVVV COMPILES             ^^^^^^^^^^ DOES NOT WORK (Building with PGI would be so much simpler....)
                 set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "${SCRIPTS}/toolchains/mingw.cmake") # Switching to MinGW toolchain for Fortran
                 list(APPEND _csc_OPTIONS -DCMAKE_GNUtoMS=ON
                                          -DCMAKE_Fortran_COMPILER="${MINGW_BIN}/gfortran.exe")
-                if(NOT EXISTS "${CURRENT_INSTALLED_DIR}/bin/libgfortran-5.dll") # this needs to be its own port. 
-                    set(MINGW_Fortran_DLLS "${MINGW_BIN}/libgfortran-5.dll"
-                                           "${MINGW_BIN}/libquadmath-0.dll"
-                                           "${MINGW_BIN}/libwinpthread-1.dll"
-                                           "${MINGW_BIN}/libgcc_s_seh-1.dll")
-                    file(INSTALL ${MINGW_Fortran_DLLS} DESTINATION "${CURRENT_PACKAGES_DIR}/bin")
-                    file(INSTALL ${MINGW_Fortran_DLLS} DESTINATION "${CURRENT_PACKAGES_DIR}/debug/bin")
-                    set(VCPKG_POLICY_SKIP_DUMPBIN_CHECKS enabled) # due to outdated msvcrt
-                endif()
             else()
                 set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "${SCRIPTS}/toolchains/windows.cmake")
             endif()
