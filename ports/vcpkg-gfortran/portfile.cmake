@@ -1,5 +1,6 @@
 if(NOT VCPKG_USE_EXTERNAL_Fortran AND CMAKE_HOST_WIN32)
-
+    set(VCPKG_CRT_LINKAGE dynamic) # Will always be dynamic no way to overwrite internal CRT linkage here
+    vcpkg_check_linkage(ONLY_DYNAMIC_LIBRARY)
     if(DEFINED ENV{PROCESSOR_ARCHITEW6432})
         set(HOST_ARCH $ENV{PROCESSOR_ARCHITEW6432})
     else()
@@ -29,7 +30,7 @@ if(NOT VCPKG_USE_EXTERNAL_Fortran AND CMAKE_HOST_WIN32)
     endif()
 
 
-    vcpkg_acquire_msys(MSYS_ROOT PACKAGES "mingw-w64-${MSYS_HOST}-gcc-fortran") # TODO: make x86 work
+    vcpkg_acquire_msys(MSYS_ROOT PACKAGES "mingw-w64-${MSYS_TARGET}-gcc-fortran") # TODO: make x86 work
 
     set(MINGW_BIN "${MSYS_ROOT}/mingw${MINGW_W_TARGET}/bin/")
     set(MINGW_Fortran_DLLS "${MINGW_BIN}/libgfortran-5.dll"
