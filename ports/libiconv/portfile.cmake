@@ -22,25 +22,30 @@ vcpkg_extract_source_archive_ex(
 )
 
 #Since libiconv uses automake, make and configure, we use a custom CMake file
-file(COPY ${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt DESTINATION ${SOURCE_PATH})
+#file(COPY ${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt DESTINATION ${SOURCE_PATH})
 
-vcpkg_configure_cmake(
+#vcpkg_configure_cmake(
+#    SOURCE_PATH ${SOURCE_PATH}
+#    PREFER_NINJA
+#    OPTIONS -DINSTALLDIR=\"\" -DLIBDIR=\"\"
+#    OPTIONS_DEBUG -DDISABLE_INSTALL_HEADERS=ON
+#)
+
+#vcpkg_install_cmake()
+
+#vcpkg_fixup_cmake_targets(CONFIG_PATH share/unofficial-iconv TARGET_PATH share/unofficial-iconv)
+
+vcpkg_configure_make(
+    AUTOCONFIG
     SOURCE_PATH ${SOURCE_PATH}
-    PREFER_NINJA
-    OPTIONS -DINSTALLDIR=\"\" -DLIBDIR=\"\"
-    OPTIONS_DEBUG -DDISABLE_INSTALL_HEADERS=ON
 )
 
-vcpkg_install_cmake()
-
-vcpkg_fixup_cmake_targets(CONFIG_PATH share/unofficial-iconv TARGET_PATH share/unofficial-iconv)
+vcpkg_install_make()
 
 vcpkg_copy_pdbs()
 
 file(COPY ${CMAKE_CURRENT_LIST_DIR}/vcpkg-cmake-wrapper.cmake DESTINATION ${CURRENT_PACKAGES_DIR}/share/Iconv)
 
 file(INSTALL ${SOURCE_PATH}/COPYING.LIB DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
-
-vcpkg_test_cmake(PACKAGE_NAME unofficial-iconv)
 
 set(VCPKG_POLICY_ALLOW_RESTRICTED_HEADERS enabled)
