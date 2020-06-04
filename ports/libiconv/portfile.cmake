@@ -1,7 +1,6 @@
 if(NOT VCPKG_TARGET_IS_WINDOWS)
+    # theoretically VCPKG needs a check here weather or not iconv is provided by the C library
     set(VCPKG_POLICY_EMPTY_PACKAGE enabled)
-    file(MAKE_DIRECTORY ${CURRENT_PACKAGES_DIR}/share/unofficial-iconv)
-    file(COPY ${CMAKE_CURRENT_LIST_DIR}/unofficial-iconv-config.cmake DESTINATION ${CURRENT_PACKAGES_DIR}/share/unofficial-iconv)
     return()
 endif()
 
@@ -19,6 +18,7 @@ vcpkg_extract_source_archive_ex(
     PATCHES
         0002-Config-for-MSVC.patch
         0003-Add-export.patch
+        configure.ac.patch
 )
 
 #Since libiconv uses automake, make and configure, we use a custom CMake file
@@ -41,11 +41,15 @@ vcpkg_configure_make(
 )
 
 vcpkg_install_make()
+vcpkg_fixup_pkgconfig()
 
 vcpkg_copy_pdbs()
+vcpkg_copy_tool_dependencies(${CURRENT_PACKAGES_DIR}/tools/${PORT}/bin )
 
 file(COPY ${CMAKE_CURRENT_LIST_DIR}/vcpkg-cmake-wrapper.cmake DESTINATION ${CURRENT_PACKAGES_DIR}/share/Iconv)
 
 file(INSTALL ${SOURCE_PATH}/COPYING.LIB DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
+
+file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/share)
 
 set(VCPKG_POLICY_ALLOW_RESTRICTED_HEADERS enabled)

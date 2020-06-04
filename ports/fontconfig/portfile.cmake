@@ -4,10 +4,11 @@ vcpkg_from_gitlab(
     GITLAB_URL https://gitlab.freedesktop.org/
     OUT_SOURCE_PATH SOURCE_PATH
     REPO fontconfig/fontconfig
-    REF  b1df1101a643ae16cdfa1d83b939de2497b1bf27 #v1.19.2
+    REF  b1df1101a643ae16cdfa1d83b939de2497b1bf27
     SHA512 9165c758de40053d9ab9a1ae86f41e7076e730eaba6b4a0b2673b6535d2cb9708de4fcac2bb8883477e17b8e52d4396a3392cdbf3ca90109c8b3c1b749dd6d3c
     HEAD_REF master # branch name
     PATCHES fcobjtypehash.patch
+            build.patch
 ) 
 
 file(COPY ${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt DESTINATION ${SOURCE_PATH})
@@ -21,11 +22,23 @@ file(COPY ${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt DESTINATION ${SOURCE_PATH})
         # -DFC_SKIP_TOOLS=ON
         # -DFC_SKIP_HEADERS=ON
 # )
+vcpkg_find_acquire_program(GPERF)
+get_filename_component(GPERF_PATH ${GPERF} DIRECTORY)
+vcpkg_add_to_path(${GPERF_PATH})
+
+if(VCPKG_TARGET_IS_WINDOWS)
+    list(APPEND OPTIONS os_win32=yes
+                        ms_librarian=yes)
+endif()
 
 vcpkg_configure_make(
     AUTOCONFIG
+    COPY_SOURCE
     SOURCE_PATH ${SOURCE_PATH}
     OPTIONS
+        --disable-docs
+        ${OPTIONS}
+        ac_cv_type_pid_t=yes
         --enable-iconv
         #--enable-expat
         "--with-expat=${CURRENT_INSTALLED_DIR}"
@@ -49,7 +62,7 @@ vcpkg_install_make()
 #vcpkg_fixup_cmake_targets(CONFIG_PATH share/unofficial-fontconfig TARGET_PATH share/unofficial-fontconfig)
 vcpkg_fixup_pkgconfig()
 vcpkg_copy_pdbs()
-
+vcpkg_copy_tool_dependencies("${CURRENT_PACKAGES_DIR}/tools/${PORT}/bin")
 if(VCPKG_LIBRARY_LINKAGE STREQUAL dynamic)
     foreach(HEADER fcfreetype.h fontconfig.h)
         file(READ ${CURRENT_PACKAGES_DIR}/include/fontconfig/${HEADER} FC_HEADER)
@@ -61,8 +74,8 @@ if(VCPKG_LIBRARY_LINKAGE STREQUAL dynamic)
         file(WRITE ${CURRENT_PACKAGES_DIR}/include/fontconfig/${HEADER} "${FC_HEADER}")
     endforeach()
 endif()
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
 
-file(COPY ${SOURCE_PATH}/COPYING DESTINATION ${CURRENT_PACKAGES_DIR}/share/fontconfig)
-file(RENAME ${CURRENT_PACKAGES_DIR}/share/fontconfig/COPYING ${CURRENT_PACKAGES_DIR}/share/fontconfig/copyright)
+file(INSTALL "${SOURCE_PATH}/COPYING" DESTINATION "${CURRENT_PACKAGES_DIR}/share/fontconfig/" RENAME copyright)
 
 #vcpkg_test_cmake(PACKAGE_NAME unofficial-fontconfig)

@@ -72,20 +72,20 @@ endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
-add_library(libcharset libcharset/lib/localcharset.c libcharset/lib/relocatable-stub.c)
+add_library(${CMAKE_STATIC_LIBRARY_PREFIX}charset libcharset/lib/localcharset.c libcharset/lib/relocatable-stub.c)
 target_include_directories(libcharset PUBLIC $<INSTALL_INTERFACE:include>)
 
-add_library(libiconv lib/iconv.c lib/relocatable.c)
+add_library(${CMAKE_STATIC_LIBRARY_PREFIX}iconv lib/iconv.c lib/relocatable.c)
 if(WIN32)
-  target_compile_definitions(libiconv PRIVATE
+  target_compile_definitions(${CMAKE_STATIC_LIBRARY_PREFIX}iconv PRIVATE
                                           -Dset_relocation_prefix=libiconv_set_relocation_prefix
                                           -Drelocate=libiconv_relocate -Drelocate2=libiconv_relocate2
   )
 endif()
-target_link_libraries(libiconv PRIVATE libcharset)
+target_link_libraries(${CMAKE_STATIC_LIBRARY_PREFIX}iconv PRIVATE ${CMAKE_STATIC_LIBRARY_PREFIX}charset)
 target_include_directories(libiconv PUBLIC $<INSTALL_INTERFACE:include>)
 
-install(TARGETS libcharset libiconv EXPORT unofficial-iconv-targets
+install(TARGETS ${CMAKE_STATIC_LIBRARY_PREFIX}charset ${CMAKE_STATIC_LIBRARY_PREFIX}iconv EXPORT unofficial-iconv-targets
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
