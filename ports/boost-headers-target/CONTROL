@@ -1,0 +1,5 @@
+Source: boost-headers-target
+Version: 1.72.0
+Homepage: https://github.com/boostorg/headers
+Description: Boost.headers without the header installation and only the CMake target generation
+Build-Depends: boost-build
