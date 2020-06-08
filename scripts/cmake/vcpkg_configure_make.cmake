@@ -142,6 +142,26 @@ function(vcpkg_configure_make)
         set(_csc_BUILD_TRIPLET ${VCPKG_MAKE_BUILD_TRIPLET}) # Triplet overwrite for crosscompiling
     endif()
 
+    if(EXISTS "${SRC_DIR}/configure" AND "${SRC_DIR}/configure.ac")
+        set(REQUIRES_AUTOCONFIG FALSE) # use autotools and configure.ac
+        set(REQUIRES_AUTOGEN FALSE) # use autogen.sh
+        if(NOT VCPKG_MAINTAINER_SKIP_AUTOCONFIG) # If fixing bugs skipping autoconfig saves a lot of time
+            set(REQUIRES_AUTOCONFIG TRUE)
+            file(REMOVE "${SRC_DIR}/configure") # remove possible autodated configure scripts
+            set(_csc_AUTOCONFIG ON)
+        endif()
+    elseif(EXISTS "${SRC_DIR}/configure" AND NOT _csc_SKIP_CONFIGURE)
+        set(REQUIRES_AUTOCONFIG FALSE) # use autotools and configure.ac
+        set(REQUIRES_AUTOGEN FALSE) # use autogen.sh
+    elseif(EXISTS "${SRC_DIR}/configure.ac")
+        set(REQUIRES_AUTOCONFIG TRUE)
+        set(_csc_AUTOCONFIG ON)
+        set(REQUIRES_AUTOGEN FALSE)
+    elseif(EXISTS "${SRC_DIR}/autogen.sh")
+        set(REQUIRES_AUTOGEN TRUE)
+        set(REQUIRES_AUTOCONFIG FALSE)
+    endif()
+
     # Backup environment variables
     # CCAS CC C CPP CXX FC FF GC LD LF LIBTOOL OBJC OBJCXX R UPC Y 
     set(FLAGPREFIXES CCAS CC C CPP CXX FC FF GC LD LF LIBTOOL OBJC OBJXX R UPC Y)
@@ -200,7 +220,7 @@ function(vcpkg_configure_make)
             # --host: the machine you are building for
             # --target: the machine that CC will produce binaries for
             # Only for ports using autotools we can assume that it foolow the common convetions for build/target/host
-            if(NOT DEFINED _csc_BUILD_TRIPLET)
+            if(NOT _csc_BUILD_TRIPLET)
                 set(_csc_BUILD_TRIPLET "--build=${BUILD_ARCH}-pc-mingw32")  # This is required since we are running in a msys
                                                                             # shell which will be otherwise identified as ${BUILD_ARCH}-pc-msys
                 _vcpkg_determine_autotools_target_cpu(TARGET_ARCH)
@@ -291,7 +311,7 @@ function(vcpkg_configure_make)
     
     # Set configure paths
     set(_csc_OPTIONS_RELEASE ${_csc_OPTIONS_RELEASE} "--prefix=${EXTRA_QUOTES}${_VCPKG_PREFIX}${EXTRA_QUOTES}")
-    set(_csc_OPTIONS_DEBUG ${_csc_OPTIONS_DEBUG}     "--prefix=${EXTRA_QUOTES}${_VCPKG_PREFIX}/debug${EXTRA_QUOTES}")
+    set(_csc_OPTIONS_DEBUG ${_csc_OPTIONS_DEBUG} "--prefix=${EXTRA_QUOTES}${_VCPKG_PREFIX}/debug${EXTRA_QUOTES}")
     if(NOT _csc_NO_ADITIONAL_PATHS)
         set(_csc_OPTIONS_RELEASE ${_csc_OPTIONS_RELEASE}
                             # Important: These should all be relative to prefix!
@@ -312,13 +332,13 @@ function(vcpkg_configure_make)
     endif()
     # Setup common options
     if(NOT DISABLE_VERBOSE_FLAGS)
-        list(APPEND _csc_OPTIONS --disable-silent-rules --verbose )
+        list(APPEND _csc_OPTIONS --disable-silent-rules --verbose)
     endif()
 
     if(VCPKG_LIBRARY_LINKAGE STREQUAL dynamic)
         list(APPEND _csc_OPTIONS --enable-shared --disable-static)
     else()
-        list(APPEND _csc_OPTIONS --enable-static --disable-shared)
+        list(APPEND _csc_OPTIONS --disable-shared --enable-static )
     endif()
 
     file(RELATIVE_PATH RELATIVE_BUILD_PATH "${CURRENT_BUILDTREES_DIR}" "${_csc_SOURCE_PATH}/${_csc_PROJECT_SUBPATH}")
@@ -380,16 +400,6 @@ function(vcpkg_configure_make)
     set(SRC_DIR "${_csc_SOURCE_PATH}/${_csc_PROJECT_SUBPATH}")
 
     # Run autoconf if necessary
-    if(EXISTS "${SRC_DIR}/configure" AND NOT _csc_SKIP_CONFIGURE)
-        set(REQUIRES_AUTOCONFIG FALSE) # use autotools and configure.ac
-        set(REQUIRES_AUTOGEN FALSE) # use autogen.sh
-    elseif(EXISTS "${SRC_DIR}/configure.ac")
-        set(REQUIRES_AUTOCONFIG TRUE)
-        set(REQUIRES_AUTOGEN FALSE)
-    elseif(EXISTS "${SRC_DIR}/autogen.sh")
-        set(REQUIRES_AUTOGEN TRUE)
-        set(REQUIRES_AUTOCONFIG FALSE)
-    endif()
     set(_GENERATED_CONFIGURE FALSE)
     if (_csc_AUTOCONFIG OR REQUIRES_AUTOCONFIG)
         find_program(AUTORECONF autoreconf REQUIRED)
@@ -511,11 +521,11 @@ function(vcpkg_configure_make)
         set(ENV{LD_LIBRARY_PATH} "${_VCPKG_INSTALLED}${PATH_SUFFIX_${_buildtype}}/lib/${VCPKG_HOST_PATH_SEPARATOR}${_VCPKG_INSTALLED}${PATH_SUFFIX_${_buildtype}}/lib/manual-link/${LD_LIBRARY_PATH_PATHLIKE_CONCAT}")
 
         if (CMAKE_HOST_WIN32)   
-            set(command ${base_cmd} -c "${CONFIGURE_ENV} ./${RELATIVE_BUILD_PATH}/configure ${BUILD_TARGET} ${HOST_TYPE}${_csc_OPTIONS} ${_csc_OPTIONS_${_buildtype}}")
+            set(command ${base_cmd} -c "${CONFIGURE_ENV} ./${RELATIVE_BUILD_PATH}/configure ${_csc_BUILD_TRIPLET} ${_csc_OPTIONS} ${_csc_OPTIONS_${_buildtype}}")
         else()
-            set(command /bin/bash "./${RELATIVE_BUILD_PATH}/configure" ${_csc_OPTIONS} ${_csc_OPTIONS_${_buildtype}})
+            set(command /bin/bash "./${RELATIVE_BUILD_PATH}/configure" ${_csc_BUILD_TRIPLET} ${_csc_OPTIONS} ${_csc_OPTIONS_${_buildtype}})
         endif()
-
+        debug_message("Conigure Command:'${command}'")
         if (NOT _csc_SKIP_CONFIGURE)
             message(STATUS "Configuring ${TARGET_TRIPLET}-${SHORT_NAME_${_buildtype}}")
             vcpkg_execute_required_process(
