@@ -321,10 +321,6 @@ function(vcpkg_configure_make)
         list(APPEND _csc_OPTIONS --enable-static --disable-shared)
     endif()
 
-    #if (VCPKG_TARGET_IS_UWP) ######## These flags belong into some port and cannot be generally set. AUTOTOOLS uses envrionment variables !
-    #        list(APPEND _csc_OPTIONS --extra-ldflags=-APPCONTAINER --extra-ldflags=WindowsApp.lib)
-    #endif()
-
     file(RELATIVE_PATH RELATIVE_BUILD_PATH "${CURRENT_BUILDTREES_DIR}" "${_csc_SOURCE_PATH}/${_csc_PROJECT_SUBPATH}")
 
     set(base_cmd)
@@ -338,7 +334,6 @@ function(vcpkg_configure_make)
         if(VCPKG_TARGET_IS_UWP)
             # Flags should be set in the toolchain instead
             set(ENV{LIBPATH} "$ENV{LIBPATH};$ENV{_WKITS10}references\\windows.foundation.foundationcontract\\2.0.0.0\\;$ENV{_WKITS10}references\\windows.foundation.universalapicontract\\3.0.0.0\\")
-            ##set(_csc_OPTIONS ${_csc_OPTIONS} --extra-cflags=-DWINAPI_FAMILY=WINAPI_FAMILY_APP --extra-cflags=-D_WIN32_WINNT=0x0A00) //same as above /belongs into a port. 
         endif()
         #Join the options list as a string with spaces between options
         list(JOIN _csc_OPTIONS " " _csc_OPTIONS)
