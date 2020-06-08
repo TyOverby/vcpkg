@@ -1,6 +1,6 @@
 Source: libpq
-Version: 12.2-2
-Build-Depends: libpq[bonjour] (osx)
+Version: 12.2-3
+Build-Depends: libpq[bonjour] (osx), vcpkg-make (!windows)
 Supports: !uwp
 Homepage: https://www.postgresql.org/
 Description: The official database access API of postgresql

@@ -1,8 +1,9 @@
 Source: gperftools
-Version: 2019-09-02
+Version: 2019-09-02-1
 Description: A set of tools for performance profiling and memory checking
 Supports: !(arm|arm64|uwp)
 Homepage: https://github.com/gperftools/gperftools
+Build-Depends: vcpkg-make
 
 Feature: override
 Description: Override allocators

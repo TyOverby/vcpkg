@@ -24,6 +24,9 @@
 ## The target passed to the make build command (`./make <target>`). If not specified, the 'all' target will
 ## be passed.
 ##
+## ### USE_MINGW_MAKE
+## Put mingw make instead of msys make
+##
 ## ## Notes:
 ## This command should be preceeded by a call to [`vcpkg_configure_make()`](vcpkg_configure_make.md).
 ## You can use the alias [`vcpkg_install_make()`](vcpkg_configure_make.md) function if your CMake script supports the
@@ -59,17 +62,14 @@ function(vcpkg_build_make)
     set(INSTALL_OPTS )
     if (CMAKE_HOST_WIN32)
         set(PATH_GLOBAL "$ENV{PATH}")
-        # These should be moved into the portfile!
-        # vcpkg_find_acquire_program(YASM)
-        # get_filename_component(YASM_EXE_PATH ${YASM} DIRECTORY)
-        # vcpkg_add_to_path("${YASM_EXE_PATH}")
-        # vcpkg_find_acquire_program(PERL)
-        # get_filename_component(PERL_EXE_PATH ${PERL} DIRECTORY)
-        # vcpkg_add_to_path("${PERL_EXE_PATH}")
 
         vcpkg_add_to_path(PREPEND "${SCRIPTS}/buildsystems/make_wrapper")
         vcpkg_acquire_msys(MSYS_ROOT)
-        find_program(MAKE make REQUIRED) #mingw32-make
+        if(_bc_USE_MINGW_MAKE)
+            find_program(MAKE mingw32-make REQUIRED)
+        else()
+            find_program(MAKE make REQUIRED)
+        endif()
         set(MAKE_COMMAND "${MAKE}")
         set(MAKE_OPTS ${_bc_MAKE_OPTIONS} -j ${VCPKG_CONCURRENCY} --trace -f Makefile ${_bc_BUILD_TARGET})
 
@@ -79,7 +79,6 @@ function(vcpkg_build_make)
         #TODO: optimize for install-data (release) and install-exec (release/debug)
     else()
         # Compiler requriements
-        # set(MAKE_BASH)
         find_program(MAKE make REQUIRED)
         set(MAKE_COMMAND "${MAKE}")
         # Set make command and install command
