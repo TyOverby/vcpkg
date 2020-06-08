@@ -54,6 +54,7 @@ else()
     message("libgles2-mesa-dev must be installed before sdl1 can build. Install it with \"apt install libgles2-mesa-dev\".")
 
     vcpkg_configure_make(
+        AUTOCONFIG
         SOURCE_PATH ${SOURCE_PATH}     
     )
     

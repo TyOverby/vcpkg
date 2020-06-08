@@ -13,6 +13,7 @@ vcpkg_extract_source_archive_ex(
 )
 
 vcpkg_configure_make(
+    AUTOCONFIG
     SOURCE_PATH ${SOURCE_PATH}
     PROJECT_SUBPATH src/cxx
     COPY_SOURCE
