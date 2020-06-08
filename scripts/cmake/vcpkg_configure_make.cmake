@@ -31,13 +31,13 @@
 ## Skip configure process
 ##
 ## ### USE_MINGW_MAKE
-## Put mingw make instead of msys make on first path.
+## Put mingw make instead of msys make on path first.
 ##
 ## ### BUILD_TRIPLET
 ## Used to pass custom --build/--target/--host to configure. Can be globally overwritte by VCPKG_MAKE_BUILD_TRIPLET
 ##
 ## ### NO_ADDITIONAL_PATHS
-## Don't pass any additional paths to except for --prefix to the configure call
+## Don't pass any additional paths except for --prefix to the configure call
 ##
 ## ### AUTOCONFIG
 ## Need to use autoconfig to generate configure file.
@@ -142,26 +142,28 @@ function(vcpkg_configure_make)
         set(_csc_BUILD_TRIPLET ${VCPKG_MAKE_BUILD_TRIPLET}) # Triplet overwrite for crosscompiling
     endif()
 
-    if(EXISTS "${SRC_DIR}/configure" AND "${SRC_DIR}/configure.ac")
-        set(REQUIRES_AUTOCONFIG FALSE) # use autotools and configure.ac
-        set(REQUIRES_AUTOGEN FALSE) # use autogen.sh
+    set(SRC_DIR "${_csc_SOURCE_PATH}/${_csc_PROJECT_SUBPATH}")
+
+    set(REQUIRES_AUTOGEN FALSE) # use autogen.sh
+    set(REQUIRES_AUTOCONFIG FALSE) # use autotools and configure.ac
+    if(EXISTS "${SRC_DIR}/configure" AND "${SRC_DIR}/configure.ac") # remove configure; rerun autoconf
         if(NOT VCPKG_MAINTAINER_SKIP_AUTOCONFIG) # If fixing bugs skipping autoconfig saves a lot of time
             set(REQUIRES_AUTOCONFIG TRUE)
             file(REMOVE "${SRC_DIR}/configure") # remove possible autodated configure scripts
             set(_csc_AUTOCONFIG ON)
         endif()
-    elseif(EXISTS "${SRC_DIR}/configure" AND NOT _csc_SKIP_CONFIGURE)
-        set(REQUIRES_AUTOCONFIG FALSE) # use autotools and configure.ac
-        set(REQUIRES_AUTOGEN FALSE) # use autogen.sh
-    elseif(EXISTS "${SRC_DIR}/configure.ac")
+    elseif(EXISTS "${SRC_DIR}/configure" AND NOT _csc_SKIP_CONFIGURE) # run normally; no autoconf or autgen required
+    elseif(EXISTS "${SRC_DIR}/configure.ac") # Run autoconfig
         set(REQUIRES_AUTOCONFIG TRUE)
         set(_csc_AUTOCONFIG ON)
-        set(REQUIRES_AUTOGEN FALSE)
-    elseif(EXISTS "${SRC_DIR}/autogen.sh")
+    elseif(EXISTS "${SRC_DIR}/autogen.sh") # Run autogen
         set(REQUIRES_AUTOGEN TRUE)
-        set(REQUIRES_AUTOCONFIG FALSE)
+    else()
+        message(FATAL_ERROR "Don't know what to do!")
     endif()
-
+    
+    debug_message("REQUIRES_AUTOGEN:${REQUIRES_AUTOGEN}")
+    debug_message("REQUIRES_AUTOCONFIG:${REQUIRES_AUTOCONFIG}")
     # Backup environment variables
     # CCAS CC C CPP CXX FC FF GC LD LF LIBTOOL OBJC OBJCXX R UPC Y 
     set(FLAGPREFIXES CCAS CC C CPP CXX FC FF GC LD LF LIBTOOL OBJC OBJXX R UPC Y)
@@ -338,7 +340,7 @@ function(vcpkg_configure_make)
     if(VCPKG_LIBRARY_LINKAGE STREQUAL dynamic)
         list(APPEND _csc_OPTIONS --enable-shared --disable-static)
     else()
-        list(APPEND _csc_OPTIONS --disable-shared --enable-static )
+        list(APPEND _csc_OPTIONS --disable-shared --enable-static)
     endif()
 
     file(RELATIVE_PATH RELATIVE_BUILD_PATH "${CURRENT_BUILDTREES_DIR}" "${_csc_SOURCE_PATH}/${_csc_PROJECT_SUBPATH}")
@@ -397,8 +399,6 @@ function(vcpkg_configure_make)
         set(PKGCONFIG $ENV{PKG_CONFIG})
     endif()
     
-    set(SRC_DIR "${_csc_SOURCE_PATH}/${_csc_PROJECT_SUBPATH}")
-
     # Run autoconf if necessary
     set(_GENERATED_CONFIGURE FALSE)
     if (_csc_AUTOCONFIG OR REQUIRES_AUTOCONFIG)
