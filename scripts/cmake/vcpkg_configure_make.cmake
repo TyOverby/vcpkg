@@ -36,7 +36,7 @@
 ## ### BUILD_TRIPLET
 ## Used to pass custom --build/--target/--host to configure. Can be globally overwritte by VCPKG_MAKE_BUILD_TRIPLET
 ##
-## ### NO_ADITIONAL_PATHS
+## ### NO_ADDITIONAL_PATHS
 ## Don't pass any additional paths to except for --prefix to the configure call
 ##
 ## ### AUTOCONFIG
@@ -133,7 +133,7 @@ endmacro()
 
 function(vcpkg_configure_make)
     cmake_parse_arguments(_csc
-        "AUTOCONFIG;SKIP_CONFIGURE;COPY_SOURCE;USE_MINGW_MAKE;DISABLE_VERBOSE_FLAGS;NO_ADITIONAL_PATHS"
+        "AUTOCONFIG;SKIP_CONFIGURE;COPY_SOURCE;USE_MINGW_MAKE;DISABLE_VERBOSE_FLAGS;NO_ADDITIONAL_PATHS"
         "SOURCE_PATH;PROJECT_SUBPATH;PRERUN_SHELL;BUILD_TRIPLET"
         "OPTIONS;OPTIONS_DEBUG;OPTIONS_RELEASE"
         ${ARGN}
@@ -312,7 +312,7 @@ function(vcpkg_configure_make)
     # Set configure paths
     set(_csc_OPTIONS_RELEASE ${_csc_OPTIONS_RELEASE} "--prefix=${EXTRA_QUOTES}${_VCPKG_PREFIX}${EXTRA_QUOTES}")
     set(_csc_OPTIONS_DEBUG ${_csc_OPTIONS_DEBUG} "--prefix=${EXTRA_QUOTES}${_VCPKG_PREFIX}/debug${EXTRA_QUOTES}")
-    if(NOT _csc_NO_ADITIONAL_PATHS)
+    if(NOT _csc_NO_ADDITIONAL_PATHS)
         set(_csc_OPTIONS_RELEASE ${_csc_OPTIONS_RELEASE}
                             # Important: These should all be relative to prefix!
                             "--bindir=${prefix_var}/tools/${PORT}/bin"

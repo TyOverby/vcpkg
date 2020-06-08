@@ -27,7 +27,7 @@ endif()
 
 vcpkg_configure_make(
     SOURCE_PATH ${SOURCE_PATH}
-    NO_ADITIONAL_PATHS
+    NO_ADDITIONAL_PATHS
     OPTIONS
         ${OPTIONS}
         --enable-strip
