@@ -34,7 +34,7 @@
 ## Put mingw make instead of msys make on path first.
 ##
 ## ### BUILD_TRIPLET
-## Used to pass custom --build/--target/--host to configure. Can be globally overwritte by VCPKG_MAKE_BUILD_TRIPLET
+## Used to pass custom --build/--target/--host to configure. Can be globally overwritten by VCPKG_MAKE_BUILD_TRIPLET
 ##
 ## ### NO_ADDITIONAL_PATHS
 ## Don't pass any additional paths except for --prefix to the configure call
@@ -221,7 +221,7 @@ function(vcpkg_configure_make)
             # --build: the machine you are building on
             # --host: the machine you are building for
             # --target: the machine that CC will produce binaries for
-            # Only for ports using autotools we can assume that it foolow the common convetions for build/target/host
+            # Only for ports using autotools so we can assume that they follow the common conventions for build/target/host
             if(NOT _csc_BUILD_TRIPLET)
                 set(_csc_BUILD_TRIPLET "--build=${BUILD_ARCH}-pc-mingw32")  # This is required since we are running in a msys
                                                                             # shell which will be otherwise identified as ${BUILD_ARCH}-pc-msys
@@ -373,7 +373,7 @@ function(vcpkg_configure_make)
     set(C_FLAGS_GLOBAL "$ENV{CFLAGS} ${VCPKG_C_FLAGS}")
     set(CXX_FLAGS_GLOBAL "$ENV{CXXFLAGS} ${VCPKG_CXX_FLAGS}")
     set(LD_FLAGS_GLOBAL "$ENV{LDFLAGS} ${VCPKG_LINKER_FLAGS}")
-    # Flags should be set in the toolchain instead (Setting this up correctly would requires a function named vcpkg_determined_cmake_compiler_flags which could also be used to setup CC and CXX etc.)
+    # Flags should be set in the toolchain instead (Setting this up correctly requires a function named vcpkg_determined_cmake_compiler_flags which can also be used to setup CC and CXX etc.)
     if(NOT VCPKG_TARGET_IS_WINDOWS)
         string(APPEND C_FLAGS_GLOBAL " -fPIC")
         string(APPEND CXX_FLAGS_GLOBAL " -fPIC")
@@ -525,7 +525,7 @@ function(vcpkg_configure_make)
         else()
             set(command /bin/bash "./${RELATIVE_BUILD_PATH}/configure" ${_csc_BUILD_TRIPLET} ${_csc_OPTIONS} ${_csc_OPTIONS_${_buildtype}})
         endif()
-        debug_message("Conigure Command:'${command}'")
+        debug_message("Configure command:'${command}'")
         if (NOT _csc_SKIP_CONFIGURE)
             message(STATUS "Configuring ${TARGET_TRIPLET}-${SHORT_NAME_${_buildtype}}")
             vcpkg_execute_required_process(
