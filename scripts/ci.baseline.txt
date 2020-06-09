@@ -693,6 +693,7 @@ leveldb:x64-uwp=fail
 libaiff:x64-linux=fail
 libarchive:arm-uwp=fail
 libass:x64-windows-static=fail
+libb2:x64-windows-static=fail
 libb2:x64-uwp=fail
 libb2:arm64-windows=fail
 libb2:arm-uwp=fail
