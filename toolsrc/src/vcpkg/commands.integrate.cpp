@@ -13,7 +13,7 @@
 namespace vcpkg::Commands::Integrate
 {
 #if defined(_WIN32)
-    static std::string create_appdata_targets_shortcut(const std::string& target_path) noexcept
+    static std::string create_appdata_shortcut(const std::string& target_path) noexcept
     {
         return Strings::format(R"###(
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
@@ -80,7 +80,7 @@ namespace vcpkg::Commands::Integrate
         dir_id.erase(1, 1); // Erasing the ":"
 
         // NuGet id cannot have invalid characters. We will only use alphanumeric and dot.
-        Util::erase_remove_if(dir_id, [](char c) { return !isalnum(c) && (c != '.'); });
+        Util::erase_remove_if(dir_id, [](char c) { return !isalnum(static_cast<unsigned char>(c)) && (c != '.'); });
 
         const std::string nuget_id = "vcpkg." + dir_id;
         return nuget_id;
@@ -157,7 +157,7 @@ namespace vcpkg::Commands::Integrate
     {
         static const fs::path LOCAL_APP_DATA =
             fs::u8path(System::get_environment_variable("LOCALAPPDATA").value_or_exit(VCPKG_LINE_INFO));
-        return LOCAL_APP_DATA / "vcpkg" / "vcpkg.user.targets";
+        return LOCAL_APP_DATA / fs::u8path("vcpkg/vcpkg.user.targets");
     }
 #endif
 #if defined(_WIN32)
@@ -257,7 +257,7 @@ namespace vcpkg::Commands::Integrate
 
             const fs::path appdata_src_path = tmp_dir / "vcpkg.user.targets";
             fs.write_contents(appdata_src_path,
-                              create_appdata_targets_shortcut(paths.buildsystems_msbuild_targets.u8string()),
+                              create_appdata_shortcut(paths.buildsystems_msbuild_targets.u8string()),
                               VCPKG_LINE_INFO);
             auto appdata_dst_path = get_appdata_targets_path();
 
@@ -276,8 +276,8 @@ namespace vcpkg::Commands::Integrate
 
             const fs::path appdata_src_path2 = tmp_dir / "vcpkg.user.props";
             fs.write_contents(appdata_src_path2,
-                              create_appdata_targets_shortcut(paths.buildsystems_msbuild_props.u8string()),
-                              VCPKG_LINE_INFO);
+                              create_appdata_shortcut(paths.buildsystems_msbuild_props.u8string()),
+			      VCPKG_LINE_INFO);
             auto appdata_dst_path2 = get_appdata_props_path();
 
             const auto rc2 = fs.copy_file(appdata_src_path2, appdata_dst_path2, fs::copy_options::overwrite_existing, ec);
@@ -285,9 +285,11 @@ namespace vcpkg::Commands::Integrate
             if (!rc2 || ec)
             {
                 System::print2(System::Color::error,
-                                "Error: Failed to copy file: %s -> %s",
-                                appdata_src_path2.string(),
-                                appdata_dst_path2.string());
+                                "Error: Failed to copy file: ",
+                                appdata_src_path2.u8string(),
+                                " -> ",
+                                appdata_dst_path2.u8string(),
+								"\n");
                 Checks::exit_fail(VCPKG_LINE_INFO);
             }
         }
@@ -477,19 +479,27 @@ With a project open, go to Tools->NuGet Package Manager->Package Manager Console
     }
 #endif
 
+    void append_helpstring(HelpTableFormatter& table)
+    {
 #if defined(_WIN32)
-    const char* const INTEGRATE_COMMAND_HELPSTRING =
-        "  vcpkg integrate install         Make installed packages available user-wide. Requires admin privileges on "
-        "first use\n"
-        "  vcpkg integrate remove          Remove user-wide integration\n"
-        "  vcpkg integrate project         Generate a referencing nuget package for individual VS project use\n"
-        "  vcpkg integrate powershell      Enable PowerShell tab-completion\n";
-#else
-    const char* const INTEGRATE_COMMAND_HELPSTRING =
-        "  vcpkg integrate install         Make installed packages available user-wide.\n"
-        "  vcpkg integrate remove          Remove user-wide integration\n"
-        "  vcpkg integrate bash            Enable bash tab-completion\n";
-#endif
+        table.format("vcpkg integrate install",
+                     "Make installed packages available user-wide. Requires admin privileges on first use");
+        table.format("vcpkg integrate remove", "Remove user-wide integration");
+        table.format("vcpkg integrate project", "Generate a referencing nuget package for individual VS project use");
+        table.format("vcpkg integrate powershell", "Enable PowerShell tab-completion");
+#else  // ^^^ defined(_WIN32) // !defined(_WIN32) vvv
+        table.format("vcpkg integrate install", "Make installed packages available user-wide");
+        table.format("vcpkg integrate remove", "Remove user-wide integration");
+        table.format("vcpkg integrate bash", "Enable bash tab-completion");
+#endif // ^^^ !defined(_WIN32)
+    }
+
+    std::string get_helpstring()
+    {
+        HelpTableFormatter table;
+        append_helpstring(table);
+        return std::move(table.m_str);
+    }
 
     namespace Subcommand
     {
@@ -514,9 +524,7 @@ With a project open, go to Tools->NuGet Package Manager->Package Manager Console
     }
 
     const CommandStructure COMMAND_STRUCTURE = {
-        Strings::format("Commands:\n"
-                        "%s",
-                        INTEGRATE_COMMAND_HELPSTRING),
+        "Commands:\n" + get_helpstring(),
         1,
         1,
         {},
