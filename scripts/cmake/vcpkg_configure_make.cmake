@@ -54,6 +54,11 @@
 ## ### OPTIONS_DEBUG
 ## Additional options passed to configure during the Debug configuration. These are in addition to `OPTIONS`.
 ##
+## ### CONFIG_DEPENDENT_ENVIRONMENT
+## List of additional configuration dependent environment variables to set. 
+## Pass SOMEVAR to set the environment and have SOMEVAR_(DEBUG|RELEASE) set in the portfile to the appropriate values
+## General environment variables can be set from within the portfile itself. 
+##
 ## ## Notes
 ## This command supplies many common arguments to configure. To see the full list, examine the source.
 ##
@@ -491,6 +496,13 @@ function(vcpkg_configure_make)
     endif()
 
     foreach(_buildtype IN LISTS _buildtypes)
+        foreach(ENV_VAR ${_csc_CONFIG_DEPENDENT_ENVIRONMENT})
+            if(DEFINED ENV{${ENV_VAR}})
+                set(BACKUP_CONFIG_${ENV_VAR} "$ENV{${ENV_VAR}}")
+            endif()
+            set(ENV{${ENV_VAR}} "${${ENV_VAR}_${_buildtype}}")
+        endforeach()
+
         set(TAR_DIR "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-${SHORT_NAME_${_buildtype}}")
         file(MAKE_DIRECTORY "${TAR_DIR}")
         file(RELATIVE_PATH RELATIVE_BUILD_PATH "${TAR_DIR}" "${SRC_DIR}")
@@ -547,8 +559,17 @@ function(vcpkg_configure_make)
             unset(ENV{PKG_CONFIG_PATH})
         endif()
         unset(BACKUP_ENV_PKG_CONFIG_PATH_${_buildtype})
-    endforeach()
         
+        # Restore environment (config dependent)
+        foreach(ENV_VAR ${_csc_CONFIG_DEPENDENT_ENVIRONMENT})
+            if(BACKUP_CONFIG_${ENV_VAR})
+                set(ENV{${ENV_VAR}} "${BACKUP_CONFIG_${ENV_VAR}}")
+            else()
+                unset(ENV{${ENV_VAR}})
+            endif()
+        endforeach()
+    endforeach()
+
     # Restore environment
     foreach(_prefix IN LISTS FLAGPREFIXES)
         if(${prefix}_FLAGS_BACKUP)
