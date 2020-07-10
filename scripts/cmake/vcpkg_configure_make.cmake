@@ -403,7 +403,9 @@ function(vcpkg_configure_make)
         debug_message("ENV{PKG_CONFIG} found! Using: $ENV{PKG_CONFIG}")
         set(PKGCONFIG $ENV{PKG_CONFIG})
     endif()
-    
+    if(VCPKG_LIBRARY_LINKAGE STREQUAL "static" AND NOT PKGCONFIG STREQUAL "--static")
+        set(PKGCONFIG "${PKGCONFIG} --static")
+    endif()
     # Run autoconf if necessary
     set(_GENERATED_CONFIGURE FALSE)
     if (_csc_AUTOCONFIG OR REQUIRES_AUTOCONFIG)
