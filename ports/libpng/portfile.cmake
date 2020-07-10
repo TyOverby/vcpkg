@@ -21,7 +21,6 @@ if ("apng" IN_LIST FEATURES)
             LOGNAME extract-patch.log
         )
     endif()
-
     set(APNG_EXTRA_PATCH ${LIBPNG_APG_PATCH_PATH})
     set(LIBPNG_APNG_OPTION "-DPNG_PREFIX=a")
 endif()
@@ -73,8 +72,8 @@ vcpkg_configure_cmake(
         -DSKIP_INSTALL_PROGRAMS=ON
         -DSKIP_INSTALL_EXECUTABLES=ON
         -DSKIP_INSTALL_FILES=OFF
-        OPTIONS_DEBUG
-            -DSKIP_INSTALL_HEADERS=ON
+    OPTIONS_DEBUG
+        -DSKIP_INSTALL_HEADERS=ON
 )
 vcpkg_install_cmake()
 
