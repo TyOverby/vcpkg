@@ -11,7 +11,7 @@ index 2c4b757f9..eed560c1d 100644
    file(READ ${INPUT_FILE} TEXT)
  
    set(PREFIX "${CMAKE_INSTALL_PREFIX}")
-@@ -366,14 +366,24 @@ function(transform_pc_file INPUT_FILE OUTPUT_FILE VERSION)
+@@ -366,14 +366,21 @@ function(transform_pc_file INPUT_FILE OUTPUT_FILE VERSION)
  
    string(REGEX REPLACE "@PACKAGE_VERSION@" "${VERSION}" TEXT ${TEXT})
  
@@ -19,9 +19,6 @@ index 2c4b757f9..eed560c1d 100644
 +    set(LIB_NAME "${SHARED_TARGET}")
 +  else()
 +    set(LIB_NAME "${STATIC_TARGET}")
-+  endif()
-+  if(WIN32 AND MSVC)
-+    set(LIB_NAME "lib${LIB_NAME}")
 +  endif()
 +  string(REGEX REPLACE "@lib_name@" "${LIB_NAME}" TEXT ${TEXT})
 +
