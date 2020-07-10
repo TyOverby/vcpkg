@@ -1,10 +1,8 @@
-include(vcpkg_common_functions)
-
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO json-c/json-c
-    REF eae040a84a479ccad1d1c48314345c51ecf1a4a4
-    SHA512 18d8a31b341830b04676cad13fbc0608fb75a323522161ac8fd0bb5058db82c1c261d504696a1e12f4b03eb0967632885580ff81d808adf2f1dff7e32d131ba0
+    REF bae2f10c436eaf0d95746cbc5f1c1f0ecb866a8e
+    SHA512 d172a295cd7407c43aba828711d4f25ad2da8f0289726141d9af087c6ea6c5807a49fdb243d498bf322cec685fd3168ca8306512c6493b458d6e64bb080c3b1a
     HEAD_REF master
 )
 
@@ -16,7 +14,7 @@ vcpkg_configure_cmake(
 vcpkg_install_cmake()
 
 vcpkg_fixup_cmake_targets(CONFIG_PATH lib/cmake/${PORT})
-
+vcpkg_fixup_pkgconfig()
 vcpkg_copy_pdbs()
 
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
