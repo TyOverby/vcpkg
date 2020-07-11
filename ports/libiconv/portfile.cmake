@@ -1,5 +1,6 @@
 if(NOT VCPKG_TARGET_IS_WINDOWS)
-    # theoretically VCPKG needs a check here weather or not iconv is provided by the C library
+    # theoretically VCPKG needs a check here if or if not iconv is provided by the C library
+    message(STATUS "On platforms which are not Windows VCPKG. Assumes iconv is provided by the C library or available from the system.")
     set(VCPKG_POLICY_EMPTY_PACKAGE enabled)
     return()
 endif()
@@ -19,6 +20,7 @@ vcpkg_extract_source_archive_ex(
         0002-Config-for-MSVC.patch
         0003-Add-export.patch
         configure.ac.patch
+        rc2.patch
 )
 
 #Since libiconv uses automake, make and configure, we use a custom CMake file
@@ -35,9 +37,29 @@ vcpkg_extract_source_archive_ex(
 
 #vcpkg_fixup_cmake_targets(CONFIG_PATH share/unofficial-iconv TARGET_PATH share/unofficial-iconv)
 
+if(VCPKG_TARGET_IS_WINDOWS)
+    if(VCPKG_TARGET_ARCHITECTURE STREQUAL "x64")
+        list(APPEND ADDITIONAL_OPTIONS BUILD_TRIPLET --host=i686-w64-mingw32) # --host -> building for. --build -> building on. 
+    elseif(VCPKG_TARGET_ARCHITECTURE STREQUAL "x86")
+        list(APPEND ADDITIONAL_OPTIONS BUILD_TRIPLET --host=x86_64-w64-mingw32)
+    elseif(VCPKG_TARGET_ARCHITECTURE STREQUAL "arm64")
+        list(APPEND ADDITIONAL_OPTIONS BUILD_TRIPLET --host=armv8-w64-mingw32)
+    elseif(VCPKG_TARGET_ARCHITECTURE STREQUAL "arm")
+        list(APPEND ADDITIONAL_OPTIONS BUILD_TRIPLET --host=armv7-w64-mingw32)
+    else()
+        message(STATUS "Unsupported architecture for windows targets!")
+    endif()
+endif()
+if(CMAKE_HOST_WIN32)
+    vcpkg_add_to_path(${CURRENT_PORT_DIR})
+    set(WINDRES ":")
+    set(RC ":")
+    list(APPEND ADDITIONAL_OPTIONS CONFIGURE_ENVIRONMENT_VARIABLES WINDRES RC)
+endif()
 vcpkg_configure_make(
     AUTOCONFIG
     SOURCE_PATH ${SOURCE_PATH}
+    ${ADDITIONAL_OPTIONS}
 )
 
 vcpkg_install_make()
