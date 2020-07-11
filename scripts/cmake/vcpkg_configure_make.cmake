@@ -59,6 +59,9 @@
 ## Pass SOMEVAR to set the environment and have SOMEVAR_(DEBUG|RELEASE) set in the portfile to the appropriate values
 ## General environment variables can be set from within the portfile itself. 
 ##
+## ### CONFIGURE_ENVIRONMENT_VARIABLES
+## List of additional environment variables to pass via the configure call. 
+##
 ## ## Notes
 ## This command supplies many common arguments to configure. To see the full list, examine the source.
 ##
@@ -140,7 +143,7 @@ function(vcpkg_configure_make)
     cmake_parse_arguments(_csc
         "AUTOCONFIG;SKIP_CONFIGURE;COPY_SOURCE;USE_MINGW_MAKE;DISABLE_VERBOSE_FLAGS;NO_ADDITIONAL_PATHS"
         "SOURCE_PATH;PROJECT_SUBPATH;PRERUN_SHELL;BUILD_TRIPLET"
-        "OPTIONS;OPTIONS_DEBUG;OPTIONS_RELEASE"
+        "OPTIONS;OPTIONS_DEBUG;OPTIONS_RELEASE;CONFIGURE_ENVIRONMENT_VARIABLES;CONFIG_DEPENDENT_ENVIRONMENT"
         ${ARGN}
     )
     if(DEFINED VCPKG_MAKE_BUILD_TRIPLET)
@@ -280,13 +283,16 @@ function(vcpkg_configure_make)
         endif()
         _vcpkg_append_to_configure_environment(CONFIGURE_ENV LD "link.exe -verbose")
         _vcpkg_append_to_configure_environment(CONFIGURE_ENV RANLIB ":") # Trick to ignore the RANLIB call
+        _vcpkg_append_to_configure_environment(CONFIGURE_ENV OBJDUMP ":")
         _vcpkg_append_to_configure_environment(CONFIGURE_ENV CCAS ":")   # If required set the ENV variable CCAS in the portfile correctly
         _vcpkg_append_to_configure_environment(CONFIGURE_ENV STRIP ":")   # If required set the ENV variable CCAS in the portfile correctly
         _vcpkg_append_to_configure_environment(CONFIGURE_ENV NM "dumpbin.exe -symbols -headers")
         # Would be better to have a true nm here! Some symbols (mainly exported variables) get not properly imported with dumpbin as nm 
         # and require __declspec(dllimport) for some reason (same problem CMake has with WINDOWS_EXPORT_ALL_SYMBOLS)
         _vcpkg_append_to_configure_environment(CONFIGURE_ENV DLLTOOL "link.exe -verbose -dll")
-        
+        foreach(_env IN LISTS _csc_CONFIGURE_ENVIRONMENT_VARIABLES)
+            _vcpkg_append_to_configure_environment(CONFIGURE_ENV ${_env} "${${_env}}")
+        endforeach()
         # Other maybe interesting variables to control
         # COMPILE This is the command used to actually compile a C source file. The file name is appended to form the complete command line. 
         # LINK This is the command used to actually link a C program.
