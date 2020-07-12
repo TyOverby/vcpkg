@@ -14,22 +14,6 @@ index ff03fb2eb..769fc6005 100644
  	  done)
  uninstall-local:
  	@(echo cd $(DESTDIR)$(configdir);			\
-diff --git a/conf.d/Makefile.in b/conf.d/Makefile.in
-index 5c7d74fb4..fbc59536f 100644
---- a/conf.d/Makefile.in
-+++ b/conf.d/Makefile.in
-@@ -686,9 +686,9 @@ install-data-hook:
- 	@(echo cd $(DESTDIR)$(configdir);			\
- 	  cd $(DESTDIR)$(configdir);				\
- 	  for i in $(CONF_LINKS); do				\
--	    echo $(RM) $$i";" ln -s $(templatedir)/$$i .;	\
-+	    echo $(RM) $$i";" $(LN_S) $(DESTDIR)$(templatedir)/$$i .;	\
- 	    $(RM) $$i;						\
--	    ln -s $(templatedir)/$$i .;				\
-+	    $(LN_S) $(DESTDIR)$(templatedir)/$$i .;				\
- 	  done)
- uninstall-local:
- 	@(echo cd $(DESTDIR)$(configdir);			\
 diff --git a/fc-cache/fc-cache.c b/fc-cache/fc-cache.c
 index 87e302083..8b5012110 100644
 --- a/fc-cache/fc-cache.c
