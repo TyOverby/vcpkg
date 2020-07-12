@@ -6,6 +6,7 @@ vcpkg_from_github(
     REF a91a3dda326ceaf66b7279bf64ba07014d3f81b8
     SHA512 8e04573dfb400e14e2c1d3a2cd851a66f8218ccfdaa4f701ed9369d7f040d7028582e72af9b236af42d9d3c6c128014670e8ae0261c6f4770affd1aea1454b1e
     HEAD_REF master
+    PATCHES GLEW_and_TARGET.patch
 )
 
 # make sure that no "internal" libraries are used by removing them
@@ -24,33 +25,13 @@ vcpkg_configure_cmake(
         -Dfreetype-gl_BUILD_MAKEFONT=OFF
 )
 
-# We may soon install using a modified cmake process with install target
-
-# Although FreeType-GL uses CMake as its build system, the implementation
-# (*.cmake,CMakeLists.txt) doesn't provide for any type of installation.
-# Presumably, it has been used as-is, in-tree, without ever needing to install
-# itself within a larger system.
-vcpkg_build_cmake(LOGFILE_ROOT install)
-
-file(GLOB HEADER_FILES "${SOURCE_PATH}/*.h")
-file(INSTALL ${HEADER_FILES} DESTINATION ${CURRENT_PACKAGES_DIR}/include/freetype-gl)
-
-# LIB
-file(GLOB LIBS
-    "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel/*${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}"
-    "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel/Release/*${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}"
-    "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel/*/Release/*${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}"
-)
-file(GLOB DEBUG_LIBS
-    "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg/*${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}"
-    "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg/Debug/*${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}"
-    "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg/*/Debug/*${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}"
-)
-
-file(INSTALL ${LIBS} DESTINATION ${CURRENT_PACKAGES_DIR}/lib)
-file(INSTALL ${DEBUG_LIBS} DESTINATION ${CURRENT_PACKAGES_DIR}/debug/lib)
+vcpkg_install_cmake()
+vcpkg_fixup_cmake_targets(CONFIG_PATH lib/cmake)
 
 vcpkg_copy_pdbs()
 
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
+
 # Handle copyright
-file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/freetype-gl RENAME copyright)
+file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)

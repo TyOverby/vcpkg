@@ -1,0 +1,53 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 1c2e89fba..f91a6bd9b 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -92,7 +92,7 @@ include_directories(
+     ${OPENGL_INCLUDE_DIRS}
+     ${FREETYPE_INCLUDE_DIRS}
+     ${CMAKE_CURRENT_SOURCE_DIR}
+-    ${GLEW_INCLUDE_PATH}
++    ${GLEW_INCLUDE_DIRS}
+ )
+ 
+ if(MSVC)
+@@ -140,6 +140,8 @@ add_library(freetype-gl STATIC
+     ${FREETYPE_GL_SRC}
+     ${FREETYPE_GL_HDR}
+ )
++target_link_libraries(freetype-gl PRIVATE GLEW::GLEW)
++target_include_directories(freetype-gl INTERFACE $<INSTALL_INTERFACE:include>)
+ 
+ if(freetype-gl_BUILD_MAKEFONT)
+     add_executable(makefont makefont.c)
+@@ -149,7 +151,7 @@ if(freetype-gl_BUILD_MAKEFONT)
+         ${OPENGL_LIBRARY}
+         ${FREETYPE_LIBRARIES}
+         ${MATH_LIBRARY}
+-        ${GLEW_LIBRARY}
++        GLEW::GLEW
+     )
+ 
+     if(MSVC AND NOT (MSVC_VERSION LESS 1900))
+@@ -159,13 +161,18 @@ if(freetype-gl_BUILD_MAKEFONT)
+     endif()
+ endif()
+ 
+-install(TARGETS freetype-gl
++install(TARGETS freetype-gl EXPORT freetype-gl-targets
+   RUNTIME DESTINATION bin
+   LIBRARY DESTINATION lib
+   ARCHIVE DESTINATION lib)
+ install(FILES ${FREETYPE_GL_HDR}
+-  DESTINATION include/freetype-gl
+-  PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
++  DESTINATION include/freetype-gl)
++
++install(EXPORT freetype-gl-targets NAMESPACE unofficial:: DESTINATION lib/cmake) # should better use gnuinstalldirs
++set(CONFIG_TXT "include(CMakeFindDependencyMacro)\nfind_dependency(GLEW)\ninclude(\${CMAKE_CURRENT_LIST_DIR}/freetype-gl-targets.cmake)")
++file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/freetype-gl-config.cmake" "${CONFIG_TXT}")
++install(FILES "${CMAKE_CURRENT_BINARY_DIR}/freetype-gl-config.cmake" DESTINATION lib/cmake)
++
+ 
+ if(freetype-gl_BUILD_APIDOC)
+     add_subdirectory(doc)
