@@ -9,8 +9,7 @@ vcpkg_from_gitlab(
     HEAD_REF master # branch name
     PATCHES remove_tests.patch
             build.patch
-    #PATCHES fcobjtypehash.patch
-) 
+)
 
 vcpkg_find_acquire_program(GPERF)
 get_filename_component(GPERF_PATH ${GPERF} DIRECTORY)
@@ -42,8 +41,8 @@ vcpkg_configure_make(
         "--with-expat-lib=${CURRENT_INSTALLED_DIR}/lib"
         "--with-libiconv-lib=${CURRENT_INSTALLED_DIR}/lib"
 )
-	# [AC_HELP_STRING([--enable-libxml2],
-			# [Use libxml2 instead of Expat])])
+        # [AC_HELP_STRING([--enable-libxml2],
+        # [Use libxml2 instead of Expat])])
 
 vcpkg_install_make()
 vcpkg_copy_pdbs()
