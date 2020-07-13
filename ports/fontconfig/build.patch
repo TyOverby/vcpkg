@@ -14,6 +14,29 @@ index ff03fb2eb..769fc6005 100644
  	  done)
  uninstall-local:
  	@(echo cd $(DESTDIR)$(configdir);			\
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 35e820d60..42bd7c5a2 100644
+--- a/src/Makefile.am	
++++ b/src/Makefile.am
+@@ -33,7 +33,7 @@ fontconfig_def_dependency = fontconfig.def
+ 
+ install-libtool-import-lib: libfontconfig.la
+ 	$(MKDIR_P) $(DESTDIR)$(libdir)
+-	$(INSTALL) .libs/libfontconfig.dll.a $(DESTDIR)$(libdir)/libfontconfig.dll.a
++#	$(INSTALL) .libs/libfontconfig.dll.a $(DESTDIR)$(libdir)/libfontconfig.dll.a
+ 	$(INSTALL) fontconfig.def $(DESTDIR)$(libdir)/fontconfig.def
+ 
+ uninstall-libtool-import-lib:
+@@ -58,7 +58,8 @@ fontconfig.lib : libfontconfig.la
+ 	lib -name:libfontconfig-@LIBT_CURRENT_MINUS_AGE@.dll -def:fontconfig.def -out:$@
+ 
+ install-ms-import-lib:
+-	$(INSTALL) fontconfig.lib $(DESTDIR)$(libdir)
++	$(MKDIR_P) $(DESTDIR)$(libdir)
++	$(INSTALL) .libs/fontconfig.lib $(DESTDIR)$(libdir)
+ 
+ uninstall-ms-import-lib:
+ 	$(RM) $(DESTDIR)$(libdir)/fontconfig.lib
 diff --git a/fc-cache/fc-cache.c b/fc-cache/fc-cache.c
 index 87e302083..8b5012110 100644
 --- a/fc-cache/fc-cache.c

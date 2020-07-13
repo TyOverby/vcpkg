@@ -15,11 +15,6 @@ vcpkg_find_acquire_program(GPERF)
 get_filename_component(GPERF_PATH ${GPERF} DIRECTORY)
 vcpkg_add_to_path(${GPERF_PATH})
 
-if(VCPKG_TARGET_IS_WINDOWS)
-    list(APPEND OPTIONS os_win32=yes
-                        ms_librarian=yes)
-endif()
-
 vcpkg_configure_make(
     AUTOCONFIG
     COPY_SOURCE
@@ -40,6 +35,7 @@ vcpkg_configure_make(
     OPTIONS_RELEASE
         "--with-expat-lib=${CURRENT_INSTALLED_DIR}/lib"
         "--with-libiconv-lib=${CURRENT_INSTALLED_DIR}/lib"
+    ADD_BIN_TO_PATH
 )
         # [AC_HELP_STRING([--enable-libxml2],
         # [Use libxml2 instead of Expat])])
@@ -70,17 +66,17 @@ file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/var"
                     "${CURRENT_PACKAGES_DIR}/debug/share"
                     "${CURRENT_PACKAGES_DIR}/debug/etc")
 
-# if(VCPKG_LIBRARY_LINKAGE STREQUAL dynamic)
-    # foreach(HEADER fcfreetype.h fontconfig.h)
-        # file(READ ${CURRENT_PACKAGES_DIR}/include/fontconfig/${HEADER} FC_HEADER)
-        # if(NOT VCPKG_CMAKE_SYSTEM_NAME OR VCPKG_CMAKE_SYSTEM_NAME STREQUAL "WindowsStore")
-            # string(REPLACE "#define FcPublic" "#define FcPublic __declspec(dllimport)" FC_HEADER "${FC_HEADER}")
-        # else()
-            # string(REPLACE "#define FcPublic" "#define FcPublic __attribute__((visibility(\"default\")))" FC_HEADER "${FC_HEADER}")
-        # endif()
-        # file(WRITE ${CURRENT_PACKAGES_DIR}/include/fontconfig/${HEADER} "${FC_HEADER}")
-    # endforeach()
-# endif()
+if(VCPKG_LIBRARY_LINKAGE STREQUAL dynamic)
+    foreach(HEADER fcfreetype.h fontconfig.h)
+        file(READ ${CURRENT_PACKAGES_DIR}/include/fontconfig/${HEADER} FC_HEADER)
+        if(VCPKG_TARGET_IS_WINDOWS)
+            string(REPLACE "#define FcPublic" "#define FcPublic __declspec(dllimport)" FC_HEADER "${FC_HEADER}")
+        else()
+            string(REPLACE "#define FcPublic" "#define FcPublic __attribute__((visibility(\"default\")))" FC_HEADER "${FC_HEADER}")
+        endif()
+        file(WRITE ${CURRENT_PACKAGES_DIR}/include/fontconfig/${HEADER} "${FC_HEADER}")
+    endforeach()
+endif()
 
 file(INSTALL ${SOURCE_PATH}/COPYING DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
 
