@@ -10,8 +10,12 @@ APT_PACKAGES="at curl unzip tar libxt-dev gperf libxaw7-dev cifs-utils \
   build-essential g++ gfortran zip libx11-dev libxkbcommon-x11-dev libxi-dev \
   libgl1-mesa-dev libglu1-mesa-dev mesa-common-dev libxinerama-dev \
   libxcursor-dev yasm libnuma1 libnuma-dev python-six python3-six python-yaml \
-  flex libbison-dev autoconf libudev-dev libncurses5-dev libtool libxrandr-dev \
-  xutils-dev dh-autoreconf libgles2-mesa-dev ruby-full pkg-config"
+  flex libbison-dev libudev-dev libncurses5-dev libxrandr-dev \
+  xutils-dev libgles2-mesa-dev ruby-full"
+
+# Autotools
+APT_PACKAGES="$APT_PACKAGES autoconf dh-autoreconf libtool pkg-config autopoint \
+  autoconf-archive"
 
 # Additionally required by qt5-base
 APT_PACKAGES="$APT_PACKAGES libxext-dev libxfixes-dev libxrender-dev \
