@@ -7,10 +7,13 @@ vcpkg_from_github(
     PATCHES pkgconfig.patch
 )
 
-
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
     PREFER_NINJA
+    OPTIONS "-DDISABLE_WERROR=ON"
+    # Could be features:
+    # -DENABLE_RDRAND=ON
+    # -DENABLE_THREADING=ON
 )
 
 vcpkg_install_cmake()
