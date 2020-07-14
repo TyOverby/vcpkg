@@ -24,24 +24,14 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
         png         CMAKE_DISABLE_FIND_PACKAGE_PNG
 )
 
-if(NOT ${VCPKG_LIBRARY_LINKAGE} STREQUAL "dynamic")
-    set(ENABLE_DLL_EXPORT OFF)
-else()
-    set(ENABLE_DLL_EXPORT ON)
-endif()
-
-set(OPTIONS)
-if (NOT VCPKG_TARGET_IS_WINDOWS)
-  list(APPEND OPTIONS -DCMAKE_DISABLE_FIND_PACKAGE_HarfBuzz=ON)
-endif()
-
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
     PREFER_NINJA
     OPTIONS
         -DFT_WITH_ZLIB=ON # Force system zlib.
+        -DFT_WITH_BROTLI=ON 
+        -DCMAKE_DISABLE_FIND_PACKAGE_HarfBuzz=ON
         ${FEATURE_OPTIONS}
-        -DENABLE_DLL_EXPORT=${ENABLE_DLL_EXPORT}
         ${OPTIONS}
 )
 

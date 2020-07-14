@@ -72,6 +72,7 @@ set(includedir "\${prefix}/include")
 if(VCPKG_TARGET_IS_LINUX)
     # Used here in .pc.in files: Libs.private: @PTHREAD_CFLAGS@
     set(PTHREAD_CFLAGS "-pthread")
+    set(SYSTEM_LIBRARIES SYSTEM_LIBRARIES -pthread)
 endif()
 
 configure_file("${SOURCE_PATH}/libpcre.pc.in" "${CURRENT_PACKAGES_DIR}/lib/pkgconfig/libpcre.pc" @ONLY)
@@ -110,7 +111,7 @@ if(VCPKG_TARGET_IS_WINDOWS)
     file(WRITE ${CURRENT_PACKAGES_DIR}/debug/lib/pkgconfig/libpcreposix.pc ${LIBPCREPOSIX.PC})
 endif()
 
-vcpkg_fixup_pkgconfig(SYSTEM_LIBRARIES pthread)
+vcpkg_fixup_pkgconfig(${SYSTEM_LIBRARIES})
 
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/share)
