@@ -11,6 +11,7 @@ vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
     PREFER_NINJA
     OPTIONS "-DDISABLE_WERROR=ON"
+            "-DBUILD_TESTING=OFF"
     # Could be features:
     # -DENABLE_RDRAND=ON
     # -DENABLE_THREADING=ON
