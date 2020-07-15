@@ -58,7 +58,9 @@ else()
     )
     
     vcpkg_install_make()
-    vcpkg_fixup_pkgconfig(IGNORE_FLAGS -Wl,-rpath,\${libdir} SYSTEM_LIBRARIES -lm -ldl -lpthread)
+    vcpkg_fixup_pkgconfig(IGNORE_FLAGS -Wl,-rpath,${CURRENT_PACKAGES_DIR}/lib/pkgconfig/../../lib 
+                                       -Wl,-rpath,${CURRENT_PACKAGES_DIR}/debug/lib/pkgconfig/../../lib
+                          SYSTEM_LIBRARIES pthread)
     
     file(GLOB SDL1_TOOLS "${CURRENT_PACKAGES_DIR}/bin/*")
     foreach (SDL1_TOOL ${SDL1_TOOLS})
