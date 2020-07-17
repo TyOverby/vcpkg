@@ -141,7 +141,7 @@ endmacro()
 
 function(vcpkg_configure_make)
     cmake_parse_arguments(_csc
-        "AUTOCONFIG;SKIP_CONFIGURE;COPY_SOURCE;USE_MINGW_MAKE;DISABLE_VERBOSE_FLAGS;NO_ADDITIONAL_PATHS"
+        "AUTOCONFIG;SKIP_CONFIGURE;COPY_SOURCE;USE_MINGW_MAKE;DISABLE_VERBOSE_FLAGS;NO_ADDITIONAL_PATHS;ADD_BIN_TO_PATH"
         "SOURCE_PATH;PROJECT_SUBPATH;PRERUN_SHELL;BUILD_TRIPLET"
         "OPTIONS;OPTIONS_DEBUG;OPTIONS_RELEASE;CONFIGURE_ENVIRONMENT_VARIABLES;CONFIG_DEPENDENT_ENVIRONMENT"
         ${ARGN}
@@ -292,7 +292,7 @@ function(vcpkg_configure_make)
         endif()
         _vcpkg_append_to_configure_environment(CONFIGURE_ENV LD "link.exe -verbose")
         _vcpkg_append_to_configure_environment(CONFIGURE_ENV RANLIB ":") # Trick to ignore the RANLIB call
-        _vcpkg_append_to_configure_environment(CONFIGURE_ENV OBJDUMP ":")
+        #_vcpkg_append_to_configure_environment(CONFIGURE_ENV OBJDUMP ":") ' Objdump is required to make shared libraries. Otherwise define lt_cv_deplibs_check_method=pass_all
         _vcpkg_append_to_configure_environment(CONFIGURE_ENV CCAS ":")   # If required set the ENV variable CCAS in the portfile correctly
         _vcpkg_append_to_configure_environment(CONFIGURE_ENV STRIP ":")   # If required set the ENV variable CCAS in the portfile correctly
         _vcpkg_append_to_configure_environment(CONFIGURE_ENV NM "dumpbin.exe -symbols -headers")
@@ -576,6 +576,10 @@ function(vcpkg_configure_make)
         else()
             set(command /bin/bash "./${RELATIVE_BUILD_PATH}/configure" ${_csc_BUILD_TRIPLET} ${_csc_OPTIONS} ${_csc_OPTIONS_${_buildtype}})
         endif()
+        if(_csc_ADD_BIN_TO_PATH)
+            set(PATH_BACKUP $ENV{PATH})
+            vcpkg_add_to_path("${CURRENT_INSTALLED_DIR}${PATH_SUFFIX_${_buildtype}}/bin")
+        endif()
         debug_message("Configure command:'${command}'")
         if (NOT _csc_SKIP_CONFIGURE)
             message(STATUS "Configuring ${TARGET_TRIPLET}-${SHORT_NAME_${_buildtype}}")
@@ -598,7 +602,10 @@ function(vcpkg_configure_make)
             unset(ENV{PKG_CONFIG_PATH})
         endif()
         unset(BACKUP_ENV_PKG_CONFIG_PATH_${_buildtype})
-        
+
+        if(_csc_ADD_BIN_TO_PATH)
+            set(ENV{PATH} "${PATH_BACKUP}")
+        endif()
         # Restore environment (config dependent)
         foreach(ENV_VAR ${_csc_CONFIG_DEPENDENT_ENVIRONMENT})
             if(BACKUP_CONFIG_${ENV_VAR})
