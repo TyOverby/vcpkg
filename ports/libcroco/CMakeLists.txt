@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.11)
 project(libcroco C)
 
-find_package(unofficial-iconv REQUIRED)
+find_package(Iconv REQUIRED)
 find_package(unofficial-gettext CONFIG REQUIRED)
 find_package(unofficial-glib CONFIG REQUIRED)
 find_package(LibXml2 REQUIRED)
@@ -128,7 +128,7 @@ install(
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/unofficial-libcroco-config.cmake "
 include(CMakeFindDependencyMacro)
 find_dependency(unofficial-gettext)
-find_dependency(unofficial-iconv CONFIG)
+find_dependency(Iconv)
 find_dependency(unofficial-glib CONFIG)
 find_dependency(LibXml2)
 if(NOT WIN32)

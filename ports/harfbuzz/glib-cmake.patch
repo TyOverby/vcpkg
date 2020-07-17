@@ -16,7 +16,7 @@ index 9b21bef2c..ae741ef63 100644
 -
 -  include_directories(${GLIBCONFIG_INCLUDE_DIR} ${GLIB_INCLUDE_DIR})
 +  find_package(Threads REQUIRED)
-+  find_package(unofficial-iconv REQUIRED)
++  find_package(Iconv REQUIRED)
 +  find_package(unofficial-glib CONFIG REQUIRED)
 
    list(APPEND project_headers ${PROJECT_SOURCE_DIR}/src/hb-glib.h)

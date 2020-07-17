@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(libintl C)
 
-find_package(unofficial-iconv REQUIRED)
+find_package(Iconv REQUIRED)
 
 set(CMAKE_STATIC_LIBRARY_PREFIX)
 set(CMAKE_SHARED_LIBRARY_PREFIX)
@@ -105,7 +105,7 @@ add_definitions("-DBUILDING_LIBINTL -DIN_LIBINTL -DENABLE_RELOCATABLE=1 -DIN_LIB
 add_definitions("-DNO_XMALLOC -Dset_relocation_prefix=libintl_set_relocation_prefix -Drelocate=libintl_relocate -DDEPENDS_ON_LIBICONV=1 -DHAVE_CONFIG_H -DHAVE_ICONV -DHAVE_ICONV_H -DICONV_CONST=const -D_CRT_SECURE_NO_WARNINGS")
 
 add_library(libintl ${SOURCES})
-target_link_libraries(libintl PRIVATE unofficial::iconv::libcharset unofficial::iconv::libiconv)
+target_link_libraries(libintl PRIVATE Iconv::Iconv)
 
 target_include_directories(libintl PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/config>
@@ -139,7 +139,7 @@ install(
 
 file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/unofficial-gettext-config.cmake" "
 include(CMakeFindDependencyMacro)
-find_dependency(unofficial-iconv)
+find_dependency(Iconv)
 find_dependency(Threads)
 include(\${CMAKE_CURRENT_LIST_DIR}/unofficial-gettext-targets.cmake)
 ")
