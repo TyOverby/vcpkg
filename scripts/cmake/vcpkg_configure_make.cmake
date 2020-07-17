@@ -237,18 +237,19 @@ function(vcpkg_configure_make)
                 _vcpkg_determine_autotools_target_cpu(TARGET_ARCH)
                 if(NOT TARGET_ARCH MATCHES "${BUILD_ARCH}") # we do not need to specify the additional flags if we build nativly. 
                     string(APPEND _csc_BUILD_TRIPLET " --host=${TARGET_ARCH}-pc-mingw32") # (Host activates crosscompilation; The name given here is just the prefix of the host tools for the target)
-                    if(VCPKG_TARGET_ARCHITECTURE STREQUAL x86)
-                        #string(APPEND _csc_BUILD_TRIPLET " --host=${TARGET_ARCH}-w64-mingw32")
-                    elseif(VCPKG_TARGET_ARCHITECTURE STREQUAL x64)
-                        #string(APPEND _csc_BUILD_TRIPLET " --host=${TARGET_ARCH}-w64-mingw32")
-                    elseif(VCPKG_TARGET_ARCHITECTURE STREQUAL arm64)
-                        #string(APPEND _csc_BUILD_TRIPLET " --host=${TARGET_ARCH}-w64-mingw32 --target=i686-w64-mingw32") # This is probably wrong
-                        #string(APPEND _csc_BUILD_TRIPLET " --target=i686-w64-mingw32") # This is probably wrong
-                    elseif(VCPKG_TARGET_ARCHITECTURE STREQUAL arm)
+                    #if(VCPKG_TARGET_ARCHITECTURE STREQUAL x86)
+                        #string(APPEND _csc_BUILD_TRIPLET " --host=${TARGET_ARCH}-pc-mingw32")
+                    #elseif(VCPKG_TARGET_ARCHITECTURE STREQUAL x64)
+                        #string(APPEND _csc_BUILD_TRIPLET " --host=${TARGET_ARCH}-pc-mingw32")
+                    #elseif(VCPKG_TARGET_ARCHITECTURE STREQUAL arm64)
+                        #string(APPEND _csc_BUILD_TRIPLET " --host=${TARGET_ARCH}-pc-mingw32 --target=i686-pc-mingw32") # This is probably wrong
+                        #string(APPEND _csc_BUILD_TRIPLET " --target=i686-pc-mingw32") # This is probably wrong
+                    #elseif(VCPKG_TARGET_ARCHITECTURE STREQUAL arm)
                         #string(APPEND _csc_BUILD_TRIPLET " --host=arm-pc-mingw32") # This is probably wrong
-                    endif()
+                    #endif()
                 endif()
                 if(VCPKG_TARGET_IS_UWP AND NOT _csc_BUILD_TRIPLET MATCHES "--host")
+                    # Needs to be different from --build to enable cross builds
                     string(APPEND _csc_BUILD_TRIPLET " --host=${TARGET_ARCH}-unknown-mingw32")
                 endif()
             endif()
