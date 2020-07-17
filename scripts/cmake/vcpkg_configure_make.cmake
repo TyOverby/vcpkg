@@ -98,9 +98,9 @@ macro(_vcpkg_determine_autotools_host_cpu out_var)
     elseif(HOST_ARCH MATCHES "(x|X)86")
         set(${out_var} i686)
     elseif(HOST_ARCH MATCHES "^(ARM|arm)64$")
-        set(${out_var} armv8)
+        set(${out_var} aarch64)
     elseif(HOST_ARCH MATCHES "^(ARM|arm)$")
-        set(${out_var} armv7)
+        set(${out_var} arm)
     else()
         message(FATAL_ERROR "Unsupported host architecture ${HOST_ARCH} in _vcpkg_determine_autotools_host_cpu!" )
     endif()
@@ -113,9 +113,9 @@ macro(_vcpkg_determine_autotools_target_cpu out_var)
     elseif(VCPKG_TARGET_ARCHITECTURE MATCHES "(x|X)86")
         set(${out_var} i686)
     elseif(VCPKG_TARGET_ARCHITECTURE MATCHES "^(ARM|arm)64$")
-        set(${out_var} armv8)
+        set(${out_var} aarch64)
     elseif(VCPKG_TARGET_ARCHITECTURE MATCHES "^(ARM|arm)$")
-        set(${out_var} armv7)
+        set(${out_var} arm)
     else()
         message(FATAL_ERROR "Unsupported VCPKG_TARGET_ARCHITECTURE architecture ${VCPKG_TARGET_ARCHITECTURE} in _vcpkg_determine_autotools_target_cpu!" )
     endif()
@@ -229,22 +229,30 @@ function(vcpkg_configure_make)
             # --build: the machine you are building on
             # --host: the machine you are building for
             # --target: the machine that CC will produce binaries for
+            # https://stackoverflow.com/questions/21990021/how-to-determine-host-value-for-configure-when-using-cross-compiler
             # Only for ports using autotools so we can assume that they follow the common conventions for build/target/host
             if(NOT _csc_BUILD_TRIPLET)
                 set(_csc_BUILD_TRIPLET "--build=${BUILD_ARCH}-pc-mingw32")  # This is required since we are running in a msys
                                                                             # shell which will be otherwise identified as ${BUILD_ARCH}-pc-msys
                 _vcpkg_determine_autotools_target_cpu(TARGET_ARCH)
                 if(NOT TARGET_ARCH MATCHES "${BUILD_ARCH}") # we do not need to specify the additional flags if we build nativly. 
+                    string(APPEND _csc_BUILD_TRIPLET " --host=${TARGET_ARCH}-pc-mingw32") # (Host activates crosscompilation; The name given here is just the prefix of the host tools for the target)
                     if(VCPKG_TARGET_ARCHITECTURE STREQUAL x86)
-                        string(APPEND _csc_BUILD_TRIPLET " --target=i686-pc-mingw32 --host=i686-pc-mingw32")
+                        #string(APPEND _csc_BUILD_TRIPLET " --host=${TARGET_ARCH}-w64-mingw32")
                     elseif(VCPKG_TARGET_ARCHITECTURE STREQUAL x64)
-                        string(APPEND _csc_BUILD_TRIPLET " --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32")
+                        #string(APPEND _csc_BUILD_TRIPLET " --host=${TARGET_ARCH}-w64-mingw32")
+                    elseif(VCPKG_TARGET_ARCHITECTURE STREQUAL arm64)
+                        #string(APPEND _csc_BUILD_TRIPLET " --host=${TARGET_ARCH}-w64-mingw32 --target=i686-w64-mingw32") # This is probably wrong
+                        #string(APPEND _csc_BUILD_TRIPLET " --target=i686-w64-mingw32") # This is probably wrong
                     elseif(VCPKG_TARGET_ARCHITECTURE STREQUAL arm)
-                        string(APPEND _csc_BUILD_TRIPLET " --target=arm-pc-mingw32 --host=i686-pc-mingw32") # This is probably wrong
-                        # There is no crosscompiler for ARM-Windows in msys.
+                        #string(APPEND _csc_BUILD_TRIPLET " --host=arm-pc-mingw32") # This is probably wrong
                     endif()
                 endif()
+                if(VCPKG_TARGET_IS_UWP AND NOT _csc_BUILD_TRIPLET MATCHES "--host")
+                    string(APPEND _csc_BUILD_TRIPLET " --host=${TARGET_ARCH}-unknown-mingw32")
+                endif()
             endif()
+            debug_message("Using make triplet: ${_csc_BUILD_TRIPLET}")
         endif()
         vcpkg_acquire_msys(MSYS_ROOT PACKAGES ${MSYS_REQUIRE_PACKAGES})
         if(_csc_USE_MINGW_MAKE)
@@ -271,10 +279,10 @@ function(vcpkg_configure_make)
 
         set(CONFIGURE_ENV "")
         if (_csc_AUTOCONFIG) # without autotools we assume a custom configure script which correctly handles cl and lib. Otherwise the port needs to set CC|CXX|AR and probably CPP
-            _vcpkg_append_to_configure_environment(CONFIGURE_ENV CPP "${MSYS_ROOT}/usr/share/automake-1.16/compile cl.exe -nologo -E")
-            _vcpkg_append_to_configure_environment(CONFIGURE_ENV CC "${MSYS_ROOT}/usr/share/automake-1.16/compile cl.exe -nologo")
-            _vcpkg_append_to_configure_environment(CONFIGURE_ENV CXX "${MSYS_ROOT}/usr/share/automake-1.16/compile cl.exe -nologo")
-            _vcpkg_append_to_configure_environment(CONFIGURE_ENV AR "${MSYS_ROOT}/usr/share/automake-1.16/ar-lib lib.exe -verbose")
+            _vcpkg_append_to_configure_environment(CONFIGURE_ENV CPP "compile cl.exe -nologo -E")
+            _vcpkg_append_to_configure_environment(CONFIGURE_ENV CC "compile cl.exe -nologo")
+            _vcpkg_append_to_configure_environment(CONFIGURE_ENV CXX "compile cl.exe -nologo")
+            _vcpkg_append_to_configure_environment(CONFIGURE_ENV AR "ar-lib lib.exe -verbose")
         else()
             _vcpkg_append_to_configure_environment(CONFIGURE_ENV CPP "cl.exe -nologo -E")
             _vcpkg_append_to_configure_environment(CONFIGURE_ENV CC "cl.exe -nologo")
@@ -290,6 +298,15 @@ function(vcpkg_configure_make)
         # Would be better to have a true nm here! Some symbols (mainly exported variables) get not properly imported with dumpbin as nm 
         # and require __declspec(dllimport) for some reason (same problem CMake has with WINDOWS_EXPORT_ALL_SYMBOLS)
         _vcpkg_append_to_configure_environment(CONFIGURE_ENV DLLTOOL "link.exe -verbose -dll")
+        
+        if(VCPKG_TARGET_IS_UWP)
+            string(REPLACE "\\" "/" VCToolsInstallDir "$ENV{VCToolsInstallDir}")
+            file(CREATE_LINK "${VCToolsInstallDir}" "${CURRENT_BUILDTREES_DIR}/UWP/" SYMBOLIC) # Silly trick to move that path VCToolsInstallDir to a path without spaces
+            #_vcpkg_append_to_configure_environment(CONFIGURE_ENV _CL_ "-FU${CURRENT_BUILDTREES_DIR}/UWP/lib/x86/store/references/platform.winmd")
+            #_vcpkg_append_to_configure_environment(CONFIGURE_ENV MANIFEST_TOOL ":")
+            #_vcpkg_append_to_configure_environment(CONFIGURE_ENV LIBS "$ENV{LIBS} -lWindowsApp")
+            #set(ENV{LIBS} "$ENV{LIBS} -lWindowsApp.lib")
+        endif()
         foreach(_env IN LISTS _csc_CONFIGURE_ENVIRONMENT_VARIABLES)
             _vcpkg_append_to_configure_environment(CONFIGURE_ENV ${_env} "${${_env}}")
         endforeach()
@@ -364,10 +381,6 @@ function(vcpkg_configure_make)
             set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "${SCRIPTS}/toolchains/windows.cmake")
         endif()
         include("${VCPKG_CHAINLOAD_TOOLCHAIN_FILE}")
-        if(VCPKG_TARGET_IS_UWP)
-            # Flags should be set in the toolchain instead
-            set(ENV{LIBPATH} "$ENV{LIBPATH};$ENV{_WKITS10}references\\windows.foundation.foundationcontract\\2.0.0.0\\;$ENV{_WKITS10}references\\windows.foundation.universalapicontract\\3.0.0.0\\")
-        endif()
         #Join the options list as a string with spaces between options
         list(JOIN _csc_OPTIONS " " _csc_OPTIONS)
         list(JOIN _csc_OPTIONS_RELEASE " " _csc_OPTIONS_RELEASE)
@@ -391,11 +404,28 @@ function(vcpkg_configure_make)
     else()
         string(APPEND C_FLAGS_GLOBAL " /D_WIN32_WINNT=0x0601 /DWIN32_LEAN_AND_MEAN /DWIN32 /D_WINDOWS") # TODO: Should be CPP flags instead -> rewrite when vcpkg_determined_cmake_compiler_flags defined
         string(APPEND CXX_FLAGS_GLOBAL " /D_WIN32_WINNT=0x0601 /DWIN32_LEAN_AND_MEAN /DWIN32 /D_WINDOWS")
-        string(APPEND LD_FLAGS_GLOBAL " /VERBOSE -no-undefined")
+        string(APPEND LD_FLAGS_GLOBAL " -CL_Wl,-VERBOSE,-no-undefined")
+        if(VCPKG_TARGET_IS_UWP)
+            # Be aware that configure thinks it is crosscompiling due to: 
+            # error while loading shared libraries: VCRUNTIME140D_APP.dll: cannot open shared object file: No such file or directory
+            #set(PLATFORM $ENV{VCToolsInstallDir})
+            #string(REPLACE "\\" "/" PLATFORM "${PLATFORM}")
+            #string(REPLACE " " "\" PLATFORM "${PLATFORM}")
+            string(REPLACE "\\" "/" VCToolsInstallDir "$ENV{VCToolsInstallDir}")
+            file(CREATE_LINK "${VCToolsInstallDir}" "${CURRENT_BUILDTREES_DIR}/UWP/" SYMBOLIC) # Silly trick to move that path VCToolsInstallDir to a path without spaces
+            set(ENV{_CL_} "$ENV{_CL_} /DWINAPI_FAMILY=WINAPI_FAMILY_APP /D__WRL_NO_DEFAULT_LIB_ -FU\"${CURRENT_BUILDTREES_DIR}/UWP/lib/x86/store/references/platform.winmd\"")
+            set(ENV{_LINK_} "$ENV{_LINK_} /MANIFEST /DYNAMICBASE WindowsApp.lib /WINMD:NO /APPCONTAINER")
+            #string(APPEND C_FLAGS_GLOBAL " /DWINAPI_FAMILY=WINAPI_FAMILY_APP /D__WRL_NO_DEFAULT_LIB_ -FU\"${CURRENT_BUILDTREES_DIR}/UWP/lib/x86/store/references/platform.winmd\"") # TODO: Should be CPP flags instead -> rewrite when vcpkg_determined_cmake_compiler_flags defined
+            #string(APPEND CXX_FLAGS_GLOBAL " /DWINAPI_FAMILY=WINAPI_FAMILY_APP /D__WRL_NO_DEFAULT_LIB__ -FU\"${CURRENT_BUILDTREES_DIR}/UWP/lib/x86/store/references/platform.winmd\"")
+            #string(APPEND LD_FLAGS_GLOBAL " -CL_Wl,-APPCONTAINER,WindowsApp.lib,-WINMD:NO") #-Xlinker
+            #string(APPEND LD_FLAGS_GLOBAL " -CL_Wl,-APPCONTAINER,-DYNAMICBASE,-WINMD:NO") #-Xlinker
+            #set(ENV{LDLIBS} "WindowsApp.lib")
+            #set(ENV{LIBS} "$ENV{LIBS} -lWindowsApp")
+        endif()
         if(VCPKG_TARGET_ARCHITECTURE STREQUAL x64)
-            string(APPEND LD_FLAGS_GLOBAL " /machine:x64")
+            string(APPEND LD_FLAGS_GLOBAL " -CL_Wl,-MACHINE:x64")
         elseif(VCPKG_TARGET_ARCHITECTURE STREQUAL x86)
-            string(APPEND LD_FLAGS_GLOBAL " /machine:x86")
+            string(APPEND LD_FLAGS_GLOBAL " -CL_Wl,-MACHINE:x86")
         endif()
     endif()
     
